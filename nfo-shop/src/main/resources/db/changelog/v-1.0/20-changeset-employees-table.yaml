@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addEmployeesTable
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 20-create-employees-table.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 20-drop-employees-table.sql

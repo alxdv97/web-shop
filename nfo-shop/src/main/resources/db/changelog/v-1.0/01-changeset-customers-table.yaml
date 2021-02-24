@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addCustomersTable
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-create-customers-table.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-drop-customers-table.sql
