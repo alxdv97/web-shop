@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addSampleOrders
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 30-add-sample-orders.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 30-delete-sample-orders.sql
