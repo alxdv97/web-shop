@@ -1,4 +1,4 @@
-package ru.alxdv.nfoshop.config;
+package ru.alxdv.nfoshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
