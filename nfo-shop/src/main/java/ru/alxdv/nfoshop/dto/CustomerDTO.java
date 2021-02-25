@@ -9,7 +9,7 @@ import lombok.Setter;
 @Schema(description = "Customer's entity")
 public class CustomerDTO {
 
-    @Schema(description = "Customer's id", example = "1")
+    @Schema(description = "Customer's ID", example = "1")
     private Long id;
 
     @Schema(description = "Customer's email", example = "customer1@email.com")

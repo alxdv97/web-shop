@@ -18,4 +18,24 @@ public class DefaultCustomerService implements CustomerService {
     public List<Customer> getAllCustomers() {
         return repo.findAll();
     }
+
+    @Override
+    public Customer createCustomer(Customer customer) {
+        return repo.save(customer);
+    }
+
+    @Override
+    public Customer getCustomer(Long id) {
+        return repo.getOne(id);
+    }
+
+    @Override
+    public Customer updateCustomer(Customer customer) {
+        return repo.save(customer);
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        repo.deleteById(id);
+    }
 }

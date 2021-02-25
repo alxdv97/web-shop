@@ -1,2 +1,2 @@
 delete from orders
-where creation_date like '2021-02-24 19:%'
+where id between 1 and 5;
