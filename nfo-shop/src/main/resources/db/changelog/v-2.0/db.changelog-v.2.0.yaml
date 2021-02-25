@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-sample-customers-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 10-changeset-sample-products-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 20-changeset-sample-employees-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 30-changeset-sample-orders-table.yaml
+      relativeToChangelogFile: true

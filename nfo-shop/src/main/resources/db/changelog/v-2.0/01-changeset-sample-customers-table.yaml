@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addSampleCustomers
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-add-sample-customers.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-delete-sample-customers.sql

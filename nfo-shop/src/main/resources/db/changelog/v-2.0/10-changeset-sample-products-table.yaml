@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addSampleProducts
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 10-add-sample-products.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 10-delete-sample-products.sql

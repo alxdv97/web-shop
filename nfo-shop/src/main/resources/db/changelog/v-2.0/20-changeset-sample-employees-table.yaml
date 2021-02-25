@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addSampleEmployees
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 20-add-sample-employees.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 20-delete-sample-employees.sql
