@@ -21,7 +21,8 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    private final EmployeeMapper mapper = Mappers.getMapper(EmployeeMapper.class);
+    @Autowired
+    private EmployeeMapper mapper;
 
     @GetMapping
     @Operation(

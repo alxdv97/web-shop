@@ -24,3 +24,13 @@ databaseChangeLog:
       changes:
         - tagDatabase:
             tag: sample-data
+
+  - include:
+      file: v-3.0/db.changelog-v.3.0.yaml
+      relativeToChangelogFile: true
+  - changeSet:
+      id: 3
+      author: alxdv
+      changes:
+        - tagDatabase:
+            tag: add-orders-products-relation

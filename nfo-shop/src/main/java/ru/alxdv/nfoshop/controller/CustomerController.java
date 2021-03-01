@@ -21,7 +21,8 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    private final CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
+    @Autowired
+    private CustomerMapper mapper;
 
     @GetMapping
     @Operation(

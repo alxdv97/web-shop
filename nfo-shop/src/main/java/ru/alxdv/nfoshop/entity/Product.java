@@ -1,12 +1,16 @@
 package ru.alxdv.nfoshop.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -24,4 +28,9 @@ public class Product {
 
     @Column(name = "description")
     private String description;
+
+    @Builder.Default
+    @ManyToMany(mappedBy = "products")
+    private Set<Order> orders = new HashSet<>();
 }
+

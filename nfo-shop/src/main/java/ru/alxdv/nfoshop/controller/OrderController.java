@@ -3,7 +3,6 @@ package ru.alxdv.nfoshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,8 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    private final OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
+    @Autowired
+    private OrderMapper mapper;
 
     @GetMapping
     @Operation(
@@ -43,7 +43,7 @@ public class OrderController {
     )
     @ResponseStatus(HttpStatus.OK)
     public OrderDTO getOrder(@Parameter(description = "Order's ID")
-                                   @PathVariable Long id) {
+                             @PathVariable Long id) {
         return mapper.toDTO(orderService.getOrder(id));
     }
 
@@ -67,9 +67,9 @@ public class OrderController {
             description = "Create and return order by customer ID"
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDTO createOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO orderDTO) {
-        return mapper.toDTO(orderService.createOrder(mapper.toEntity(orderDTO)));
+    public OrderDTO createOrder(@Parameter(description = "Customer ID")
+                                @PathVariable Long customerId) {
+        return mapper.toDTO(orderService.createOrder(customerId));
     }
 
     @PutMapping
@@ -79,7 +79,7 @@ public class OrderController {
     )
     @ResponseStatus(HttpStatus.OK)
     public OrderDTO updateOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO orderDTO) {
+                                @RequestBody OrderDTO orderDTO) {
         return mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO)));
     }
 
@@ -90,7 +90,21 @@ public class OrderController {
     )
     @ResponseStatus(HttpStatus.OK)
     public void deleteOrder(@Parameter(description = "Order's ID")
-                               @PathVariable Long id) {
+                            @PathVariable Long id) {
         orderService.deleteOrderById(id);
+    }
+
+
+    @PatchMapping(value = "add-product")
+    @Operation(
+            summary = "Add product to order",
+            description = "Add product to order by its ID"
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDTO addProduct(@Parameter(description = "Product's ID")
+                               @RequestParam Long productId,
+                               @Parameter(description = "Order's ID")
+                               @RequestParam Long orderId) {
+        return mapper.toDTO(orderService.addProductToOrder(orderId, productId));
     }
 }

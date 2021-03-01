@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: addOrderProductRelation
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-add-order-product-relation.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 01-delete-order-product-relation.sql

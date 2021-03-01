@@ -1,8 +1,11 @@
 package ru.alxdv.nfoshop.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Setter
 @Getter
@@ -26,4 +29,8 @@ public class EmployeeDTO {
 
     @Schema(description = "Employee's position", example = "E1Position")
     private String position;
+
+    @JsonIgnore
+    @Schema(description = "Employee's orders")
+    private Set<OrderDTO> orders;
 }

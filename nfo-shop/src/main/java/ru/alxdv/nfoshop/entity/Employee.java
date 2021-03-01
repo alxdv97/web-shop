@@ -1,14 +1,17 @@
 package ru.alxdv.nfoshop.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "employees")
+@Builder
 public class Employee {
 
     @Id
@@ -24,6 +27,9 @@ public class Employee {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @OneToMany(mappedBy = "employee")
+    private Set<Order> orders;
 
     @Column(name = "phone")
     private String phone;

@@ -21,7 +21,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
+    @Autowired
+    private ProductMapper mapper;
 
     @GetMapping
     @Operation(

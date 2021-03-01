@@ -1,13 +1,16 @@
 package ru.alxdv.nfoshop.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Setter
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "customers")
 public class Customer implements Serializable {
@@ -25,6 +28,9 @@ public class Customer implements Serializable {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<Order> orders;
 
     @Column(name = "phone")
     private String phone;
