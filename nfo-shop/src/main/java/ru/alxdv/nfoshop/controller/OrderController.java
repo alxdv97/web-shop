@@ -51,13 +51,12 @@ public class OrderController {
             summary = "Get customer's orders",
             description = "Return all orders by customer ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderDTO> getCustomerOrders(@Parameter(description = "Customer's ID")
+    public ResponseEntity<List<OrderDTO>> getCustomerOrders(@Parameter(description = "Customer's ID")
                                             @PathVariable Long customerId) {
-        return orderService.getOrdersByCustomerId(customerId)
+        return new ResponseEntity<>(orderService.getOrdersByCustomerId(customerId)
                 .stream()
                 .map(mapper::toDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PostMapping("{customerId}")
@@ -66,8 +65,8 @@ public class OrderController {
             description = "Create and return order by customer ID"
     )
     public ResponseEntity<OrderDTO> createOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(orderDTO))),
+                                      @PathVariable Long customerId) {
+        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(customerId)),
                 HttpStatus.CREATED);
     }
 
@@ -94,16 +93,16 @@ public class OrderController {
     }
 
 
-    @PatchMapping(value = "add-product")
+    @PutMapping(value = "/add-product")
     @Operation(
             summary = "Add product to order",
             description = "Add product to order by its ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public OrderDTO addProduct(@Parameter(description = "Product's ID")
+    public ResponseEntity<OrderDTO> addProduct(@Parameter(description = "Product's ID")
                                @RequestParam Long productId,
                                @Parameter(description = "Order's ID")
                                @RequestParam Long orderId) {
-        return mapper.toDTO(orderService.addProductToOrder(orderId, productId));
+        return new ResponseEntity<>(mapper.toDTO(orderService.addProductToOrder(orderId, productId)),
+                HttpStatus.CREATED);
     }
 }
