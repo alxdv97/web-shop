@@ -20,9 +20,9 @@ public class OrderDTO {
     @Schema(description = "Order's employee ID", example = "1")
     private Long employeeId;
 
-    @Schema(description = "Order's creation date", example = "2021-02-24 19:10:25-07")
+    @Schema(description = "Order's creation date", example = "2021-02-24 19:10:25.000000")
     private Timestamp creationDate;
 
-    @Schema(description = "Order's delivery date", example = "2021-02-24 20:10:25-07")
+    @Schema(description = "Order's delivery date", example = "2021-02-24 20:10:25.000000")
     private Timestamp deliveryDate;
 }

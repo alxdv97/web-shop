@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/product")
+@RequestMapping(value = "api/products")
 @Tag(name = "Product controller", description = "Provides product API")
 public class ProductController {
 
@@ -24,7 +24,7 @@ public class ProductController {
 
     private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
 
-    @GetMapping(value = "get-all")
+    @GetMapping
     @Operation(
             summary = "Get all products",
             description = "Returns all products"
@@ -36,7 +36,7 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "get/{id}")
+    @GetMapping(value = "{id}")
     @Operation(
             summary = "Get product",
             description = "Return product by ID"
@@ -47,7 +47,7 @@ public class ProductController {
         return mapper.toDTO(productService.getProduct(id));
     }
 
-    @PostMapping(value = "create")
+    @PostMapping
     @Operation(
             summary = "Create product",
             description = "Create and return product"
@@ -58,7 +58,7 @@ public class ProductController {
         return mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO)));
     }
 
-    @PatchMapping("update")
+    @PutMapping
     @Operation(
             summary = "Update product",
             description = "Update and return product"
@@ -69,7 +69,7 @@ public class ProductController {
         return mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO)));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     @Operation(
             summary = "Delete product",
             description = "Delete product by ID"

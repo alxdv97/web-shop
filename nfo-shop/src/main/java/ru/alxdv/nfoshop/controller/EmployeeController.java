@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/employee")
+@RequestMapping(value = "api/employees")
 @Tag(name = "Employee controller", description = "Provides employee API")
 public class EmployeeController {
 
@@ -24,7 +24,7 @@ public class EmployeeController {
 
     private final EmployeeMapper mapper = Mappers.getMapper(EmployeeMapper.class);
 
-    @GetMapping(value = "get-all")
+    @GetMapping
     @Operation(
             summary = "Get all employees",
             description = "Returns all employees"
@@ -36,7 +36,7 @@ public class EmployeeController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "get/{id}")
+    @GetMapping(value = "{id}")
     @Operation(
             summary = "Get employee",
             description = "Return employee by ID"
@@ -47,7 +47,7 @@ public class EmployeeController {
         return mapper.toDTO(employeeService.getEmployee(id));
     }
 
-    @PostMapping(value = "create")
+    @PostMapping
     @Operation(
             summary = "Create employee",
             description = "Create and return employee"
@@ -58,7 +58,7 @@ public class EmployeeController {
         return mapper.toDTO(employeeService.createEmployee(mapper.toEntity(employeeDTO)));
     }
 
-    @PatchMapping("update")
+    @PutMapping
     @Operation(
             summary = "Update employee",
             description = "Update and return employee"
@@ -69,7 +69,7 @@ public class EmployeeController {
         return mapper.toDTO(employeeService.updateEmployee(mapper.toEntity(employeeDTO)));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     @Operation(
             summary = "Delete employee",
             description = "Delete employee by ID"

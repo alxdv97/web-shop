@@ -16,7 +16,7 @@ public class ProductDTO {
     private String name;
 
     @Schema(description = "Product's price", example = "100")
-    private Integer price;
+    private Double price;
 
     @Schema(description = "Product's description", example = "Product1Description")
     private String description;

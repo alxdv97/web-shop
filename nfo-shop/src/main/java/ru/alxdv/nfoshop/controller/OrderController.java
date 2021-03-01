@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/order")
+@RequestMapping(value = "api/orders")
 @Tag(name = "Order controller", description = "Provides order API")
 public class OrderController {
 
@@ -24,7 +24,7 @@ public class OrderController {
 
     private final OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
 
-    @GetMapping(value = "get-all")
+    @GetMapping
     @Operation(
             summary = "Get all orders",
             description = "Returns all orders"
@@ -36,7 +36,7 @@ public class OrderController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "get/{id}")
+    @GetMapping(value = "{id}")
     @Operation(
             summary = "Get order",
             description = "Return order by ID"
@@ -47,7 +47,7 @@ public class OrderController {
         return mapper.toDTO(orderService.getOrder(id));
     }
 
-    @PostMapping(value = "create")
+    @PostMapping
     @Operation(
             summary = "Create order",
             description = "Create and return order"
@@ -58,7 +58,7 @@ public class OrderController {
         return mapper.toDTO(orderService.createOrder(mapper.toEntity(orderDTO)));
     }
 
-    @PatchMapping("update")
+    @PutMapping
     @Operation(
             summary = "Update order",
             description = "Update and return order"
@@ -69,7 +69,7 @@ public class OrderController {
         return mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO)));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     @Operation(
             summary = "Delete order",
             description = "Delete order by ID"

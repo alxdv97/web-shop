@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/customer")
+@RequestMapping(value = "api/customers")
 @Tag(name = "Customer controller", description = "Provides customer API")
 public class CustomerController {
 
@@ -24,7 +24,7 @@ public class CustomerController {
 
     private final CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
 
-    @GetMapping(value = "get-all")
+    @GetMapping
     @Operation(
             summary = "Get all customers",
             description = "Returns all customers"
@@ -36,7 +36,7 @@ public class CustomerController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "get/{id}")
+    @GetMapping(value = "{id}")
     @Operation(
             summary = "Get customer",
             description = "Return customer by ID"
@@ -47,7 +47,7 @@ public class CustomerController {
         return mapper.toDTO(customerService.getCustomer(id));
     }
 
-    @PostMapping(value = "create")
+    @PostMapping
     @Operation(
             summary = "Create customer",
             description = "Create and return customer"
@@ -58,7 +58,7 @@ public class CustomerController {
         return mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO)));
     }
 
-    @PatchMapping("update")
+    @PutMapping
     @Operation(
             summary = "Update customer",
             description = "Update and return customer"
@@ -69,7 +69,7 @@ public class CustomerController {
         return mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO)));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     @Operation(
             summary = "Delete customer",
             description = "Delete customer by ID"
