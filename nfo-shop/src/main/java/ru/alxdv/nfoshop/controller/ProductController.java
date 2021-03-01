@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.ProductDTO;
 import ru.alxdv.nfoshop.mapper.ProductMapper;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/products")
+@RequestMapping(value = "/api/products")
 @Tag(name = "Product controller", description = "Provides product API")
 public class ProductController {
 
@@ -29,22 +30,20 @@ public class ProductController {
             summary = "Get all products",
             description = "Returns all products"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts().stream()
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return new ResponseEntity<>(productService.getAllProducts().stream()
                 .map(mapper::toDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()),HttpStatus.OK);
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "/{id}")
     @Operation(
             summary = "Get product",
             description = "Return product by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public ProductDTO getProduct(@Parameter(description = "Product's ID")
+    public ResponseEntity<ProductDTO> getProduct(@Parameter(description = "Product's ID")
                                    @PathVariable Long id) {
-        return mapper.toDTO(productService.getProduct(id));
+        return new ResponseEntity<>(mapper.toDTO(productService.getProduct(id)),HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,10 +51,10 @@ public class ProductController {
             summary = "Create product",
             description = "Create and return product"
     )
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductDTO createProduct(@Parameter(description = "Product")
+    public ResponseEntity<ProductDTO> createProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO)));
+        return new ResponseEntity<>(mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO))),
+                HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -63,20 +62,20 @@ public class ProductController {
             summary = "Update product",
             description = "Update and return product"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public ProductDTO updateProduct(@Parameter(description = "Product")
+    public ResponseEntity<ProductDTO> updateProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO)));
+        return new ResponseEntity<>(mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO))),
+                HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete product",
             description = "Delete product by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@Parameter(description = "Product's ID")
+    public ResponseEntity deleteProduct(@Parameter(description = "Product's ID")
                                @PathVariable Long id) {
         productService.deleteProductById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

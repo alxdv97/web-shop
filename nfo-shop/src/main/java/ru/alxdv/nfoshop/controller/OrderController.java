@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.OrderDTO;
 import ru.alxdv.nfoshop.mapper.OrderMapper;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/orders")
+@RequestMapping(value = "/api/orders")
 @Tag(name = "Order controller", description = "Provides order API")
 public class OrderController {
 
@@ -29,22 +30,20 @@ public class OrderController {
             summary = "Get all orders",
             description = "Returns all orders"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public List<OrderDTO> getAllOrders() {
-        return orderService.getAllOrders().stream()
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return new ResponseEntity<>(orderService.getAllOrders().stream()
                 .map(mapper::toDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()),HttpStatus.OK);
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "/{id}")
     @Operation(
             summary = "Get order",
             description = "Return order by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public OrderDTO getOrder(@Parameter(description = "Order's ID")
-                             @PathVariable Long id) {
-        return mapper.toDTO(orderService.getOrder(id));
+    public ResponseEntity<OrderDTO> getOrder(@Parameter(description = "Order's ID")
+                                   @PathVariable Long id) {
+        return new ResponseEntity<>(mapper.toDTO(orderService.getOrder(id)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/by-customer/{customerId}")
@@ -66,10 +65,10 @@ public class OrderController {
             summary = "Create customer's order",
             description = "Create and return order by customer ID"
     )
-    @ResponseStatus(HttpStatus.CREATED)
-    public OrderDTO createOrder(@Parameter(description = "Customer ID")
-                                @PathVariable Long customerId) {
-        return mapper.toDTO(orderService.createOrder(customerId));
+    public ResponseEntity<OrderDTO> createOrder(@Parameter(description = "Order")
+                                      @RequestBody OrderDTO orderDTO) {
+        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(orderDTO))),
+                HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -77,21 +76,21 @@ public class OrderController {
             summary = "Update order",
             description = "Update and return order"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public OrderDTO updateOrder(@Parameter(description = "Order")
-                                @RequestBody OrderDTO orderDTO) {
-        return mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO)));
+    public ResponseEntity<OrderDTO> updateOrder(@Parameter(description = "Order")
+                                      @RequestBody OrderDTO orderDTO) {
+        return new ResponseEntity<>(mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO))),
+                HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete order",
             description = "Delete order by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteOrder(@Parameter(description = "Order's ID")
-                            @PathVariable Long id) {
+    public ResponseEntity deleteOrder(@Parameter(description = "Order's ID")
+                               @PathVariable Long id) {
         orderService.deleteOrderById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
