@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.CustomerDTO;
 import ru.alxdv.nfoshop.mapper.CustomerMapper;
@@ -29,11 +30,11 @@ public class CustomerController {
             summary = "Get all customers",
             description = "Returns all customers"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public List<CustomerDTO> getAllCustomers() {
-        return customerService.getAllCustomers().stream()
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        return new ResponseEntity<>(customerService.getAllCustomers().stream()
                 .map(mapper::toDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
+
     }
 
     @GetMapping(value = "{id}")
@@ -41,10 +42,9 @@ public class CustomerController {
             summary = "Get customer",
             description = "Return customer by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public CustomerDTO getCustomer(@Parameter(description = "Customer's ID")
+    public ResponseEntity<CustomerDTO> getCustomer(@Parameter(description = "Customer's ID")
                                    @PathVariable Long id) {
-        return mapper.toDTO(customerService.getCustomer(id));
+        return new ResponseEntity<>(mapper.toDTO(customerService.getCustomer(id)), HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,10 +52,10 @@ public class CustomerController {
             summary = "Create customer",
             description = "Create and return customer"
     )
-    @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO createCustomer(@Parameter(description = "Customer")
+    public ResponseEntity<CustomerDTO> createCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO)));
+        return new ResponseEntity<>(mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO))),
+                HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -63,10 +63,10 @@ public class CustomerController {
             summary = "Update customer",
             description = "Update and return customer"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public CustomerDTO updateCustomer(@Parameter(description = "Customer")
+    public ResponseEntity<CustomerDTO> updateCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO)));
+        return new ResponseEntity<>(mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO))),
+                HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
@@ -74,10 +74,10 @@ public class CustomerController {
             summary = "Delete customer",
             description = "Delete customer by ID"
     )
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteCustomer(@Parameter(description = "Customer's ID")
+    public ResponseEntity deleteCustomer(@Parameter(description = "Customer's ID")
                                @PathVariable Long id) {
         customerService.deleteCustomerById(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
