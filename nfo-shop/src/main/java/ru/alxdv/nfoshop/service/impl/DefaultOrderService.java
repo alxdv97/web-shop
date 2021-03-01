@@ -38,4 +38,12 @@ public class DefaultOrderService implements OrderService {
     public void deleteOrderById(Long id) {
         repo.deleteById(id);
     }
+
+    //Modeling assigning-to-employee process
+    public Order assignEmployeeToOrder(Order order){
+        List<Employee> allEmployees = employeeRepo.findAll();
+        Random rand = new Random();
+        order.setEmployee(allEmployees.get(rand.nextInt(allEmployees.size())));
+        return order;
+    }
 }

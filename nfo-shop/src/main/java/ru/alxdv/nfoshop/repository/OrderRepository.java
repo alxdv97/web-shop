@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.alxdv.nfoshop.entity.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    List<Order> findOrdersByCustomerId(Long id);
 }

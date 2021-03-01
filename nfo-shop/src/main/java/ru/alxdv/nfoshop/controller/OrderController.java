@@ -47,10 +47,24 @@ public class OrderController {
         return mapper.toDTO(orderService.getOrder(id));
     }
 
-    @PostMapping
+    @GetMapping(value = "/by-customer/{customerId}")
     @Operation(
-            summary = "Create order",
-            description = "Create and return order"
+            summary = "Get customer's orders",
+            description = "Return all orders by customer ID"
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderDTO> getCustomerOrders(@Parameter(description = "Customer's ID")
+                                            @PathVariable Long customerId) {
+        return orderService.getOrdersByCustomerId(customerId)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping("{customerId}")
+    @Operation(
+            summary = "Create customer's order",
+            description = "Create and return order by customer ID"
     )
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDTO createOrder(@Parameter(description = "Order")
