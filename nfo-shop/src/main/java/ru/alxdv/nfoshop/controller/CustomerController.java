@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/customers")
+@RequestMapping(value = "/api/customers")
 @Tag(name = "Customer controller", description = "Provides customer API")
 public class CustomerController {
 
@@ -37,7 +37,7 @@ public class CustomerController {
 
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "/{id}")
     @Operation(
             summary = "Get customer",
             description = "Return customer by ID"
@@ -69,7 +69,7 @@ public class CustomerController {
                 HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete customer",
             description = "Delete customer by ID"
@@ -79,5 +79,4 @@ public class CustomerController {
         customerService.deleteCustomerById(id);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 }

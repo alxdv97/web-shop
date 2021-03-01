@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "api/products")
+@RequestMapping(value = "/api/products")
 @Tag(name = "Product controller", description = "Provides product API")
 public class ProductController {
 
@@ -36,7 +36,7 @@ public class ProductController {
                 .collect(Collectors.toList()),HttpStatus.OK);
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "/{id}")
     @Operation(
             summary = "Get product",
             description = "Return product by ID"
@@ -68,7 +68,7 @@ public class ProductController {
                 HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete product",
             description = "Delete product by ID"
