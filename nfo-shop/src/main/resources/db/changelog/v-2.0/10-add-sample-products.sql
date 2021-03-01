@@ -1,6 +1,6 @@
-insert into products
-values (10,'product1', 100, 'Product1Description'),
-       (20,'product2', 200, 'Product2Description'),
-       (30,'product3', 300, 'Product3Description'),
-       (40,'product3', 400, 'Product4Description'),
-       (50,'product4', 500, 'Product5Description');
+insert into products (name, price, description)
+values ('product1', 100.10, 'Product1Description'),
+       ('product2', 200.20, 'Product2Description'),
+       ('product3', 300.30, 'Product3Description'),
+       ('product3', 400.40, 'Product4Description'),
+       ('product4', 500.50, 'Product5Description');
