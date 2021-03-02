@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-order-product-relation.yaml
+      relativeToChangelogFile: true

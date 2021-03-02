@@ -3,7 +3,6 @@ package ru.alxdv.nfoshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,8 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    private final EmployeeMapper mapper = Mappers.getMapper(EmployeeMapper.class);
+    @Autowired
+    private EmployeeMapper mapper;
 
     @GetMapping
     @Operation(

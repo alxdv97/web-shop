@@ -3,7 +3,6 @@ package ru.alxdv.nfoshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,8 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    private final OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
+    @Autowired
+    private OrderMapper mapper;
 
     @GetMapping
     @Operation(
@@ -46,14 +46,27 @@ public class OrderController {
         return new ResponseEntity<>(mapper.toDTO(orderService.getOrder(id)), HttpStatus.OK);
     }
 
+    @GetMapping("/by-customer")
+    @Operation(
+            summary = "Get customer's orders",
+            description = "Return all orders by customer ID"
+    )
+    public ResponseEntity<List<OrderDTO>> getCustomerOrders(@Parameter(description = "Customer's ID")
+                                            @RequestParam Long customerId) {
+        return new ResponseEntity<>(orderService.getOrdersByCustomerId(customerId)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
     @PostMapping
     @Operation(
             summary = "Create order",
             description = "Create and return order"
     )
     public ResponseEntity<OrderDTO> createOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(orderDTO))),
+                                      @RequestBody OrderDTO order) {
+        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(order))),
                 HttpStatus.CREATED);
     }
 

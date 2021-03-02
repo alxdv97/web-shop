@@ -3,7 +3,6 @@ package ru.alxdv.nfoshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
+    @Autowired
+    private ProductMapper mapper;
 
     @GetMapping
     @Operation(
