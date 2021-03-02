@@ -43,11 +43,7 @@ public class DefaultOrderService implements OrderService {
         order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
         order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
 
-        if (order.getEmployee() == null){
-            return orderRepo.save(assignEmployeeToOrder(order));
-        } else {
-            return orderRepo.save(order);
-        }
+        return orderRepo.save(assignEmployeeToOrder(order));
     }
 
     @Override
@@ -79,7 +75,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     //Modeling assigning-to-employee process
-    public Order assignEmployeeToOrder(Order order){
+    public Order assignEmployeeToOrder(Order order) {
         List<Employee> allEmployees = employeeRepo.findAll();
         Random rand = new Random();
         order.setEmployee(allEmployees.get(rand.nextInt(allEmployees.size())));
