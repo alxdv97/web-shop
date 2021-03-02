@@ -30,7 +30,6 @@ public class EmployeeDTO {
     @Schema(description = "Employee's position", example = "E1Position")
     private String position;
 
-    @JsonIgnore
     @Schema(description = "Employee's orders")
     private Set<OrderDTO> orders;
 }

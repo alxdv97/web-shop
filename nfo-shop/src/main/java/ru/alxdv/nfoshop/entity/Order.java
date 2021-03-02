@@ -53,5 +53,4 @@ public class Order {
         products.remove(product);
         product.getOrders().remove(this);
     }
-
 }

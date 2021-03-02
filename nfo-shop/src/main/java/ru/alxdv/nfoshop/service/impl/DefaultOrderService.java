@@ -39,14 +39,15 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order createOrder(Long customerId) {
-        Order order = Order.builder()
-                .customer(customerRepo.getOne(customerId))
-                .creationDate(Timestamp.valueOf(LocalDateTime.now()))
-                .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)))
-                .build();
+    public Order createOrder(Order order) {
+        order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
+        order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
 
-        return orderRepo.save(assignEmployeeToOrder(order));
+        if (order.getEmployee() == null){
+            return orderRepo.save(assignEmployeeToOrder(order));
+        } else {
+            return orderRepo.save(order);
+        }
     }
 
     @Override

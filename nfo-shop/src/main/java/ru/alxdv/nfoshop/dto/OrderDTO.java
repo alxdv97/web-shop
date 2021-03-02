@@ -21,11 +21,11 @@ public class OrderDTO {
     @Schema(description = "Order's delivery date", example = "2021-02-24 20:10:25.000000")
     private Timestamp deliveryDate;
 
-    @Schema(description = "Order's customer")
-    private CustomerDTO customer;
+    @Schema(description = "Order's customer ID")
+    private Long customerId;
 
-    @Schema(description = "Order's employee")
-    private EmployeeDTO employee;
+    @Schema(description = "Order's employee ID")
+    private Long employeeId;
 
     @Schema(description = "Order's products")
     private Set<ProductDTO> products;

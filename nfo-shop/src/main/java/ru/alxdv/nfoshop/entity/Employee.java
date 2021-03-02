@@ -28,7 +28,10 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee",
+            cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST},
+            orphanRemoval = false,
+            fetch = FetchType.LAZY)
     private Set<Order> orders;
 
     @Column(name = "phone")

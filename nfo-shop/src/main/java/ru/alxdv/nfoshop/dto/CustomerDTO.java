@@ -30,7 +30,6 @@ public class CustomerDTO {
     @Schema(description = "Customer's address", example = "C1Address")
     private String address;
 
-    @JsonIgnore
     @Schema(description = "Customer's orders")
     private Set<OrderDTO> orders;
 }
