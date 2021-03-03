@@ -58,10 +58,7 @@ public class CustomerServiceTest {
                 .phone("+33333333333")
                 .build();
 
-        customerDB = new ArrayList<>();
-        customerDB.add(customer1);
-        customerDB.add(customer2);
-        customerDB.add(customer3);
+        customerDB = new ArrayList<>(List.of(customer1, customer2, customer3));
 
         when(repo.findAll()).thenReturn(customerDB);
 
@@ -89,7 +86,7 @@ public class CustomerServiceTest {
         List<Customer> allCustomers = service.getAllCustomers();
 
         assertNotNull(allCustomers);
-        assertEquals(3L, allCustomers.size());
+        assertEquals(3, allCustomers.size());
     }
 
     @Test
@@ -106,7 +103,7 @@ public class CustomerServiceTest {
         Customer customer = service.createCustomer(customer4);
 
         assertNotNull(customer);
-        assertEquals(4L, customerDB.size());
+        assertEquals(4, customerDB.size());
     }
 
     @Test

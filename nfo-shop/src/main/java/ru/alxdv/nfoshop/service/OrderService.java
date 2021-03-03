@@ -12,4 +12,5 @@ public interface OrderService {
     void deleteOrderById(Long id);
     Order addProductToOrder(Long orderId, Long productId);
     List<Order> getOrdersByCustomerId(Long id);
+    Order assignEmployeeToOrder(Order order);
 }

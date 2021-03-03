@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
-import ru.alxdv.nfoshop.repository.CustomerRepository;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
 import ru.alxdv.nfoshop.repository.ProductRepository;
@@ -23,9 +22,6 @@ public class DefaultOrderService implements OrderService {
 
     @Autowired
     private OrderRepository orderRepo;
-
-    @Autowired
-    private CustomerRepository customerRepo;
 
     @Autowired
     private EmployeeRepository employeeRepo;
@@ -75,6 +71,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     //Modeling assigning-to-employee process
+    @Override
     public Order assignEmployeeToOrder(Order order) {
         List<Employee> allEmployees = employeeRepo.findAll();
         Random rand = new Random();

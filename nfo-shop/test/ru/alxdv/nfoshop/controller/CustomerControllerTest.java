@@ -9,17 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-
-import org.springframework.test.web.servlet.MvcResult;
 import ru.alxdv.nfoshop.dto.CustomerDTO;
 import ru.alxdv.nfoshop.entity.Customer;
 import ru.alxdv.nfoshop.mapper.CustomerMapper;
@@ -28,6 +17,9 @@ import ru.alxdv.nfoshop.service.CustomerService;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(CustomerController.class)
@@ -88,7 +80,7 @@ public class CustomerControllerTest {
 
     @Test
     public void getAllCustomersTest() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/customers"))
+        mockMvc.perform(get("/api/customers"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -103,7 +95,6 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(customerDTO.getId()))
-                .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
                 .andReturn();
     }
 
@@ -115,8 +106,7 @@ public class CustomerControllerTest {
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(jsonPath("$.id").value(customerDTO.getId()))
-                    .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
+                    .andExpect(content().string(customerDTO.getId().toString()))
                     .andReturn();
     }
 
@@ -128,8 +118,7 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(customerDTO.getId()))
-                .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
+                .andExpect(content().string(customerDTO.getId().toString()))
                 .andReturn();
     }
 
