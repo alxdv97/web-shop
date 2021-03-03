@@ -44,7 +44,7 @@ public class CustomerControllerTest {
 
     private CustomerDTO customerDTO;
 
-    private String customer;
+    private String customerJson;
 
     @Before
     public void setUp() {
@@ -54,7 +54,7 @@ public class CustomerControllerTest {
         customerDTO.setFirstName("Data");
         customerDTO.setLastName("Transfer Object");
 
-        customer = "{\n" +
+        customerJson = "{\n" +
                 "    \"email\": \"dto@email.com\",\n" +
                 "    \"firstName\": \"Data\",\n" +
                 "    \"lastName\": \"Transfer Object\",\n" +
@@ -62,17 +62,26 @@ public class CustomerControllerTest {
                 "    \"address\": \"dtoAddress\"\n" +
                 "}";
 
+        Customer customer = Customer.builder()
+                .id(1L)
+                .email("dto@email.com")
+                .firstName("Data")
+                .lastName("Transfer Object")
+                .phone("+00000000000")
+                .address("dtoAddress")
+                .build();
+
         when(mapper.toDTO(any())).thenReturn(customerDTO);
-        when(mapper.toEntity(any())).thenReturn(new Customer());
+        when(mapper.toEntity(any())).thenReturn(customer);
 
-        when(service.getAllCustomers()).thenReturn(List.of(new Customer(),
-                new Customer(), new Customer()));
+        when(service.getAllCustomers()).thenReturn(List.of(customer,
+                customer, customer));
 
-        when(service.getCustomer(anyLong())).thenReturn(new Customer());
+        when(service.getCustomer(anyLong())).thenReturn(customer);
 
-        when(service.createCustomer(any(Customer.class))).thenReturn(new Customer());
+        when(service.createCustomer(any(Customer.class))).thenReturn(customer);
 
-        when(service.updateCustomer(any(Customer.class))).thenReturn(new Customer());
+        when(service.updateCustomer(any(Customer.class))).thenReturn(customer);
 
         doNothing().when(service).deleteCustomerById(anyLong());
     }
@@ -102,7 +111,7 @@ public class CustomerControllerTest {
     public void createCustomerTest() throws Exception {
         mockMvc.perform(post("/api/customers")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(customer))
+                .content(customerJson))
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -115,7 +124,7 @@ public class CustomerControllerTest {
     public void updateCustomerTest() throws Exception {
         mockMvc.perform(put("/api/customers")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(customer))
+                .content(customerJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -128,7 +137,7 @@ public class CustomerControllerTest {
     public void deleteCustomerTest() throws Exception {
         mockMvc.perform(delete("/api/customers/{id}","1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(customer))
+                .content(customerJson))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();

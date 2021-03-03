@@ -49,22 +49,24 @@ public class EmployeeController {
     @PostMapping
     @Operation(
             summary = "Create employee",
-            description = "Create and return employee"
+            description = "Create employee and return his ID"
     )
-    public ResponseEntity<EmployeeDTO> createEmployee(@Parameter(description = "Employee")
+    public ResponseEntity<Long> createEmployee(@Parameter(description = "Employee")
                                       @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(mapper.toDTO(employeeService.createEmployee(mapper.toEntity(employeeDTO))),
+        return new ResponseEntity<>(mapper.toDTO(employeeService.createEmployee(mapper.toEntity(employeeDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 
     @PutMapping
     @Operation(
             summary = "Update employee",
-            description = "Update and return employee"
+            description = "Update employee and return his ID"
     )
-    public ResponseEntity<EmployeeDTO> updateEmployee(@Parameter(description = "Employee")
+    public ResponseEntity<Long> updateEmployee(@Parameter(description = "Employee")
                                       @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(mapper.toDTO(employeeService.updateEmployee(mapper.toEntity(employeeDTO))),
+        return new ResponseEntity<>(mapper.toDTO(employeeService.updateEmployee(mapper.toEntity(employeeDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 

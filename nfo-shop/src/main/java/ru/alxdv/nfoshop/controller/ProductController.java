@@ -49,22 +49,24 @@ public class ProductController {
     @PostMapping
     @Operation(
             summary = "Create product",
-            description = "Create and return product"
+            description = "Create product and return its ID"
     )
-    public ResponseEntity<ProductDTO> createProduct(@Parameter(description = "Product")
+    public ResponseEntity<Long> createProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO))),
+        return new ResponseEntity<>(mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 
     @PutMapping
     @Operation(
             summary = "Update product",
-            description = "Update and return product"
+            description = "Update product and return its ID"
     )
-    public ResponseEntity<ProductDTO> updateProduct(@Parameter(description = "Product")
+    public ResponseEntity<Long> updateProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO))),
+        return new ResponseEntity<>(mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 

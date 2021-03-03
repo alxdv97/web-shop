@@ -50,22 +50,24 @@ public class CustomerController {
     @PostMapping
     @Operation(
             summary = "Create customer",
-            description = "Create and return customer"
+            description = "Create customer and return his ID"
     )
-    public ResponseEntity<CustomerDTO> createCustomer(@Parameter(description = "Customer")
+    public ResponseEntity<Long> createCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO))),
+        return new ResponseEntity<>(mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 
     @PutMapping
     @Operation(
             summary = "Update customer",
-            description = "Update and return customer"
+            description = "Update customer and return his ID"
     )
-    public ResponseEntity<CustomerDTO> updateCustomer(@Parameter(description = "Customer")
+    public ResponseEntity<Long> updateCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO))),
+        return new ResponseEntity<>(mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO)))
+                .getId(),
                 HttpStatus.CREATED);
     }
 
