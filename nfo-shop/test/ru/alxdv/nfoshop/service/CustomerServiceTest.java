@@ -62,12 +62,30 @@ public class CustomerServiceTest {
         customerDB.add(customer1);
         customerDB.add(customer2);
         customerDB.add(customer3);
+
+        when(repo.findAll()).thenReturn(customerDB);
+
+        when(repo.getOne(anyLong())).thenAnswer(i -> {
+            Long id = i.getArgument(0, Long.class);
+            return getCustomerFromDB(id);
+        });
+
+        doAnswer(i -> {
+            Long id = i.getArgument(0, Long.class);
+            Customer customer = getCustomerFromDB(id);
+            customerDB.remove(customer);
+            return null;
+        }).when(repo).deleteById(anyLong());
+
+        when(repo.save(any(Customer.class))).thenAnswer(i -> {
+            Customer customer = i.getArgument(0, Customer.class);
+            customerDB.add(customer);
+            return customer;
+        });
     }
 
     @Test
     public void getAllCustomersTest(){
-        when(repo.findAll()).thenReturn(customerDB);
-
         List<Customer> allCustomers = service.getAllCustomers();
 
         assertNotNull(allCustomers);
@@ -76,12 +94,6 @@ public class CustomerServiceTest {
 
     @Test
     public void createCustomerTest(){
-        when(repo.save(any(Customer.class))).thenAnswer(i -> {
-            Customer customer = i.getArgument(0, Customer.class);
-            customerDB.add(customer);
-            return customer;
-        });
-
         Customer customer4 = Customer.builder()
                 .id(4L)
                 .email("customer4@email.com")
@@ -93,16 +105,12 @@ public class CustomerServiceTest {
 
         Customer customer = service.createCustomer(customer4);
 
+        assertNotNull(customer);
         assertEquals(4L, customerDB.size());
     }
 
     @Test
     public void getCustomerTest(){
-        when(repo.getOne(anyLong())).thenAnswer(i -> {
-            Long id = i.getArgument(0, Long.class);
-            return getCustomerFromDB(id);
-        });
-
         Customer customer = service.getCustomer(1L);
 
         assertNotNull(customer);
@@ -111,24 +119,6 @@ public class CustomerServiceTest {
 
     @Test
     public void updateCustomerTest(){
-        when(repo.save(any(Customer.class))).thenAnswer(i -> {
-            Customer customer = i.getArgument(0, Customer.class);
-            Customer customerFromDB = getCustomerFromDB(customer.getId());
-
-            customerDB.remove(customerFromDB);
-
-            customerFromDB.setEmail(customer.getEmail());
-            customerFromDB.setAddress(customer.getAddress());
-            customerFromDB.setFirstName(customer.getFirstName());
-            customerFromDB.setLastName(customer.getLastName());
-            customerFromDB.setLastName(customer.getLastName());
-            customerFromDB.setPhone(customer.getPhone());
-
-            customerDB.add(customerFromDB);
-
-            return customerFromDB;
-        });
-
         Customer updatedCustomer = service.updateCustomer(Customer.builder()
                 .id(3L)
                 .email("customer3@email.comChanged")
@@ -144,13 +134,6 @@ public class CustomerServiceTest {
 
     @Test
     public void deleteCustomerTest(){
-        doAnswer(i -> {
-            Long id = i.getArgument(0, Long.class);
-            Customer customer = getCustomerFromDB(id);
-            customerDB.remove(customer);
-            return null;
-        }).when(repo).deleteById(anyLong());
-
         service.deleteCustomerById(3L);
 
         assertEquals(2L, customerDB.size());
