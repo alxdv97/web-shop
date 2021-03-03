@@ -93,8 +93,8 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.email").value("dto@email.com"))
+                .andExpect(jsonPath("$.id").value(customerDTO.getId()))
+                .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
                 .andReturn();
     }
 
@@ -106,8 +106,8 @@ public class CustomerControllerTest {
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(jsonPath("$.id").value("1"))
-                    .andExpect(jsonPath("$.email").value("dto@email.com"))
+                    .andExpect(jsonPath("$.id").value(customerDTO.getId()))
+                    .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
                     .andReturn();
     }
 
@@ -119,8 +119,8 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.email").value("dto@email.com"))
+                .andExpect(jsonPath("$.id").value(customerDTO.getId()))
+                .andExpect(jsonPath("$.email").value(customerDTO.getEmail()))
                 .andReturn();
     }
 
