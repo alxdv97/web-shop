@@ -71,9 +71,9 @@ public class ProductControllerTest {
 
         when(service.getProduct(anyLong())).thenReturn(product);
 
-        when(service.createProduct(any(Product.class))).thenReturn(product);
+        when(service.createProduct(any(Product.class))).thenReturn(product.getId());
 
-        when(service.updateProduct(any(Product.class))).thenReturn(product);
+        when(service.updateProduct(any(Product.class))).thenReturn(product.getId());
 
         doNothing().when(service).deleteProductById(anyLong());
     }

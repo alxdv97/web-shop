@@ -147,9 +147,9 @@ public class OrderServiceTest {
                 .products(Set.of(product))
                 .build();
 
-        Order order = service.createOrder(order4);
+        Long orderId = service.createOrder(order4);
 
-        assertNotNull(order);
+        assertNotNull(orderId);
         assertEquals(4, orderDB.size());
     }
 
@@ -163,7 +163,7 @@ public class OrderServiceTest {
 
     @Test
     public void updateOrderTest(){
-        Order updatedOrder = service.updateOrder(Order.builder()
+        Long updatedOrderId = service.updateOrder(Order.builder()
                 .id(3L)
                 .customer(new Customer())
                 .employee(new Employee())
@@ -172,9 +172,8 @@ public class OrderServiceTest {
                 .products(Set.of(product))
                 .build());
 
-        assertNotNull(updatedOrder);
-        assertEquals(new Employee(), updatedOrder.getEmployee());
-        assertEquals(new Customer(), updatedOrder.getCustomer());
+        assertNotNull(updatedOrderId);
+        assertEquals(3L, updatedOrderId.longValue());
     }
 
     @Test

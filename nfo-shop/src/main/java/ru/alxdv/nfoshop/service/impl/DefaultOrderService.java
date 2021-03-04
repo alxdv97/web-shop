@@ -35,11 +35,11 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order createOrder(Order order) {
+    public Long createOrder(Order order) {
         order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
         order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
 
-        return orderRepo.save(assignEmployeeToOrder(order));
+        return orderRepo.save(assignEmployeeToOrder(order)).getId();
     }
 
     @Override
@@ -48,8 +48,8 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order updateOrder(Order order) {
-        return orderRepo.save(order);
+    public Long updateOrder(Order order) {
+        return orderRepo.save(order).getId();
     }
 
     @Override

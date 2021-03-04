@@ -71,9 +71,9 @@ public class CustomerControllerTest {
 
         when(service.getCustomer(anyLong())).thenReturn(customer);
 
-        when(service.createCustomer(any(Customer.class))).thenReturn(customer);
+        when(service.createCustomer(any(Customer.class))).thenReturn(customer.getId());
 
-        when(service.updateCustomer(any(Customer.class))).thenReturn(customer);
+        when(service.updateCustomer(any(Customer.class))).thenReturn(customer.getId());
 
         doNothing().when(service).deleteCustomerById(anyLong());
     }

@@ -103,9 +103,9 @@ public class EmployeeServiceTest {
                 .phone("+44444444444")
                 .build();
 
-        Employee employee = service.createEmployee(employee4);
+        Long employeeId = service.createEmployee(employee4);
 
-        assertNotNull(employee);
+        assertNotNull(employeeId);
         assertEquals(4, employeeDB.size());
     }
 
@@ -119,7 +119,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void updateEmployeeTest(){
-        Employee updatedEmployee = service.updateEmployee(Employee.builder()
+        Long updatedEmployeeId = service.updateEmployee(Employee.builder()
                 .id(3L)
                 .email("emplioyee3@email.comChanged")
                 .position("Employee 3 Address Changed")
@@ -128,8 +128,8 @@ public class EmployeeServiceTest {
                 .phone("+33333333333")
                 .build());
 
-        assertNotNull(updatedEmployee);
-        assertEquals("emplioyee3@email.comChanged", updatedEmployee.getEmail());
+        assertNotNull(updatedEmployeeId);
+        assertEquals(3L, updatedEmployeeId.longValue());
     }
 
     @Test

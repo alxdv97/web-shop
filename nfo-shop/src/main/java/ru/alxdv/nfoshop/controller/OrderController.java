@@ -66,8 +66,7 @@ public class OrderController {
     )
     public ResponseEntity<Long> createOrder(@Parameter(description = "Order")
                                       @RequestBody OrderDTO order) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(order)))
-                .getId(),
+        return new ResponseEntity<>(orderService.createOrder(mapper.toEntity(order)),
                 HttpStatus.CREATED);
     }
 
@@ -78,8 +77,7 @@ public class OrderController {
     )
     public ResponseEntity<Long> updateOrder(@Parameter(description = "Order")
                                       @RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO)))
-                .getId(),
+        return new ResponseEntity<>(orderService.updateOrder(mapper.toEntity(orderDTO)),
                 HttpStatus.CREATED);
     }
 

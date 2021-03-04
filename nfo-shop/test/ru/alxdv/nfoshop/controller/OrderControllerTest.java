@@ -79,9 +79,9 @@ public class OrderControllerTest {
 
         when(service.getOrder(anyLong())).thenReturn(order);
 
-        when(service.createOrder(any(Order.class))).thenReturn(order);
+        when(service.createOrder(any(Order.class))).thenReturn(order.getId());
 
-        when(service.updateOrder(any(Order.class))).thenReturn(order);
+        when(service.updateOrder(any(Order.class))).thenReturn(order.getId());
 
         doNothing().when(service).deleteOrderById(anyLong());
     }

@@ -54,8 +54,7 @@ public class CustomerController {
     )
     public ResponseEntity<Long> createCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(mapper.toDTO(customerService.createCustomer(mapper.toEntity(customerDTO)))
-                .getId(),
+        return new ResponseEntity<>(customerService.createCustomer(mapper.toEntity(customerDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -66,8 +65,7 @@ public class CustomerController {
     )
     public ResponseEntity<Long> updateCustomer(@Parameter(description = "Customer")
                                       @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(mapper.toDTO(customerService.updateCustomer(mapper.toEntity(customerDTO)))
-                .getId(),
+        return new ResponseEntity<>(customerService.updateCustomer(mapper.toEntity(customerDTO)),
                 HttpStatus.CREATED);
     }
 

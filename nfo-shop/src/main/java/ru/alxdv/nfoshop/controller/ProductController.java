@@ -53,8 +53,7 @@ public class ProductController {
     )
     public ResponseEntity<Long> createProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(mapper.toDTO(productService.createProduct(mapper.toEntity(productDTO)))
-                .getId(),
+        return new ResponseEntity<>(productService.createProduct(mapper.toEntity(productDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -65,8 +64,7 @@ public class ProductController {
     )
     public ResponseEntity<Long> updateProduct(@Parameter(description = "Product")
                                       @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(mapper.toDTO(productService.updateProduct(mapper.toEntity(productDTO)))
-                .getId(),
+        return new ResponseEntity<>(productService.updateProduct(mapper.toEntity(productDTO)),
                 HttpStatus.CREATED);
     }
 

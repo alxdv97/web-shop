@@ -100,9 +100,9 @@ public class CustomerServiceTest {
                 .phone("+44444444444")
                 .build();
 
-        Customer customer = service.createCustomer(customer4);
+        Long customerId = service.createCustomer(customer4);
 
-        assertNotNull(customer);
+        assertNotNull(customerId);
         assertEquals(4, customerDB.size());
     }
 
@@ -116,7 +116,7 @@ public class CustomerServiceTest {
 
     @Test
     public void updateCustomerTest(){
-        Customer updatedCustomer = service.updateCustomer(Customer.builder()
+        Long updatedCustomerId = service.updateCustomer(Customer.builder()
                 .id(3L)
                 .email("customer3@email.comChanged")
                 .address("Customer 3 Address Changed")
@@ -125,8 +125,8 @@ public class CustomerServiceTest {
                 .phone("+33333333333")
                 .build());
 
-        assertNotNull(updatedCustomer);
-        assertEquals("customer3@email.comChanged", updatedCustomer.getEmail());
+        assertNotNull(updatedCustomerId);
+        assertEquals(3L, updatedCustomerId.longValue());
     }
 
     @Test

@@ -75,9 +75,9 @@ public class EmployeeControllerTest {
 
         when(service.getEmployee(anyLong())).thenReturn(employee);
 
-        when(service.createEmployee(any(Employee.class))).thenReturn(employee);
+        when(service.createEmployee(any(Employee.class))).thenReturn(employee.getId());
 
-        when(service.updateEmployee(any(Employee.class))).thenReturn(employee);
+        when(service.updateEmployee(any(Employee.class))).thenReturn(employee.getId());
 
         doNothing().when(service).deleteEmployeeById(anyLong());
     }

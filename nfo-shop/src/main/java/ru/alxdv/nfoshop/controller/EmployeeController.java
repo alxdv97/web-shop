@@ -53,8 +53,7 @@ public class EmployeeController {
     )
     public ResponseEntity<Long> createEmployee(@Parameter(description = "Employee")
                                       @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(mapper.toDTO(employeeService.createEmployee(mapper.toEntity(employeeDTO)))
-                .getId(),
+        return new ResponseEntity<>(employeeService.createEmployee(mapper.toEntity(employeeDTO)),
                 HttpStatus.CREATED);
     }
 
@@ -65,8 +64,7 @@ public class EmployeeController {
     )
     public ResponseEntity<Long> updateEmployee(@Parameter(description = "Employee")
                                       @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(mapper.toDTO(employeeService.updateEmployee(mapper.toEntity(employeeDTO)))
-                .getId(),
+        return new ResponseEntity<>(employeeService.updateEmployee(mapper.toEntity(employeeDTO)),
                 HttpStatus.CREATED);
     }
 
