@@ -20,8 +20,8 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public Customer createCustomer(Customer customer) {
-        return repo.save(customer);
+    public Long createCustomer(Customer customer) {
+        return repo.save(customer).getId();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(Customer customer) {
-        return repo.save(customer);
+    public Long updateCustomer(Customer customer) {
+        return repo.save(customer).getId();
     }
 
     @Override

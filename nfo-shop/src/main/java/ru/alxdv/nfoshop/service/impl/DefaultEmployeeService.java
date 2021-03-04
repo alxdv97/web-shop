@@ -20,8 +20,8 @@ public class DefaultEmployeeService implements EmployeeService {
     }
 
     @Override
-    public Employee createEmployee(Employee employee) {
-        return repo.save(employee);
+    public Long createEmployee(Employee employee) {
+        return repo.save(employee).getId();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class DefaultEmployeeService implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Employee employee) {
-        return repo.save(employee);
+    public Long updateEmployee(Employee employee) {
+        return repo.save(employee).getId();
     }
 
     @Override

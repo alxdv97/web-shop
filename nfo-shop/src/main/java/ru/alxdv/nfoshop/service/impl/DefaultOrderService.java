@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
-import ru.alxdv.nfoshop.repository.CustomerRepository;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
 import ru.alxdv.nfoshop.repository.ProductRepository;
@@ -25,9 +24,6 @@ public class DefaultOrderService implements OrderService {
     private OrderRepository orderRepo;
 
     @Autowired
-    private CustomerRepository customerRepo;
-
-    @Autowired
     private EmployeeRepository employeeRepo;
 
     @Autowired
@@ -39,11 +35,11 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order createOrder(Order order) {
+    public Long createOrder(Order order) {
         order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
         order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
 
-        return orderRepo.save(assignEmployeeToOrder(order));
+        return orderRepo.save(assignEmployeeToOrder(order)).getId();
     }
 
     @Override
@@ -52,8 +48,8 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order updateOrder(Order order) {
-        return orderRepo.save(order);
+    public Long updateOrder(Order order) {
+        return orderRepo.save(order).getId();
     }
 
     @Override
@@ -75,6 +71,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     //Modeling assigning-to-employee process
+    @Override
     public Order assignEmployeeToOrder(Order order) {
         List<Employee> allEmployees = employeeRepo.findAll();
         Random rand = new Random();

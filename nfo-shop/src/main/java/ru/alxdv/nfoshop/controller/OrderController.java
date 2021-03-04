@@ -62,22 +62,22 @@ public class OrderController {
     @PostMapping
     @Operation(
             summary = "Create order",
-            description = "Create and return order"
+            description = "Create order and return its ID"
     )
-    public ResponseEntity<OrderDTO> createOrder(@Parameter(description = "Order")
+    public ResponseEntity<Long> createOrder(@Parameter(description = "Order")
                                       @RequestBody OrderDTO order) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.createOrder(mapper.toEntity(order))),
+        return new ResponseEntity<>(orderService.createOrder(mapper.toEntity(order)),
                 HttpStatus.CREATED);
     }
 
     @PutMapping
     @Operation(
             summary = "Update order",
-            description = "Update and return order"
+            description = "Update order and return its ID"
     )
-    public ResponseEntity<OrderDTO> updateOrder(@Parameter(description = "Order")
+    public ResponseEntity<Long> updateOrder(@Parameter(description = "Order")
                                       @RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.updateOrder(mapper.toEntity(orderDTO))),
+        return new ResponseEntity<>(orderService.updateOrder(mapper.toEntity(orderDTO)),
                 HttpStatus.CREATED);
     }
 

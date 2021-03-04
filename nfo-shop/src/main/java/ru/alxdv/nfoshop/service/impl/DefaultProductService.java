@@ -20,8 +20,8 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return repo.save(product);
+    public Long createProduct(Product product) {
+        return repo.save(product).getId();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return repo.save(product);
+    public Long updateProduct(Product product) {
+        return repo.save(product).getId();
     }
 
     @Override
