@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.CustomerDTO;
 import ru.alxdv.nfoshop.entity.Customer;
+import ru.alxdv.nfoshop.feign.UserAuthService;
+import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
 import ru.alxdv.nfoshop.mapper.CustomerMapper;
 import ru.alxdv.nfoshop.service.CustomerService;
 
@@ -33,6 +35,13 @@ public class CustomerControllerTest {
 
     @MockBean
     private CustomerService service;
+
+    @MockBean
+    private UserAuthService authService;
+
+    @MockBean
+    private AuthHandlerInterceptor authHandlerInterceptor;
+
 
     private CustomerDTO customerDTO;
 
@@ -62,6 +71,11 @@ public class CustomerControllerTest {
                 .phone("+00000000000")
                 .address("dtoAddress")
                 .build();
+
+        when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
+
+        when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
+
 
         when(mapper.toDTO(any())).thenReturn(customerDTO);
         when(mapper.toEntity(any())).thenReturn(customer);
