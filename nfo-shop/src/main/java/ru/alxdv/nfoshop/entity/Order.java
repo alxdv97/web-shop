@@ -22,10 +22,12 @@ public class Order {
     @Column(name = "id")
     private Long id;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
@@ -36,6 +38,7 @@ public class Order {
     @Column(name = "delivery_date")
     private Timestamp deliveryDate;
 
+    @EqualsAndHashCode.Exclude
     @Builder.Default
     @ManyToMany(cascade = {
             CascadeType.PERSIST,

@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-create-table.yaml
+      relativeToChangelogFile: true

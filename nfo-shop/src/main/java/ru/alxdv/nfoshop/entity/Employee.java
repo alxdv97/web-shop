@@ -29,6 +29,7 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "employee",
             cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST},
             orphanRemoval = false,
