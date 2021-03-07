@@ -24,8 +24,8 @@ public class UserController {
             summary = "Check if user exist",
             description = "Returns all customers"
     )
-    public Boolean getAllCustomers(@Parameter(description = "Customer's ID")
-                                                   @PathVariable String username) {
+    public Boolean isUserPresent(@Parameter(description = "Username")
+                                   @PathVariable String username) {
         return service.isUserPresent(username);
     }
 }
