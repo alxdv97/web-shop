@@ -11,13 +11,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.ProductDTO;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.feign.UserAuthService;
+import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
 import ru.alxdv.nfoshop.mapper.ProductMapper;
 import ru.alxdv.nfoshop.service.ProductService;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,6 +37,12 @@ public class ProductControllerTest {
 
     @MockBean
     private ProductService service;
+
+    @MockBean
+    private UserAuthService authService;
+
+    @MockBean
+    private AuthHandlerInterceptor authHandlerInterceptor;
 
     private ProductDTO productDTO;
 
@@ -62,6 +69,10 @@ public class ProductControllerTest {
                 .description("product description")
                 .price(100.0)
                 .build();
+
+        when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
+
+        when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
 
         when(mapper.toDTO(any())).thenReturn(productDTO);
         when(mapper.toEntity(any())).thenReturn(product);

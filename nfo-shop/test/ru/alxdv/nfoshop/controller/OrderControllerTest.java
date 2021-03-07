@@ -14,6 +14,8 @@ import ru.alxdv.nfoshop.entity.Customer;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.feign.UserAuthService;
+import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
 import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.service.OrderService;
 
@@ -22,8 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,6 +44,12 @@ public class OrderControllerTest {
 
     @MockBean
     private OrderService service;
+
+    @MockBean
+    private UserAuthService authService;
+
+    @MockBean
+    private AuthHandlerInterceptor authHandlerInterceptor;
 
     private OrderDTO orderDTO;
 
@@ -69,6 +76,10 @@ public class OrderControllerTest {
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
                 .products(Set.of(Product.builder().build()))
                 .build();
+
+        when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
+
+        when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
 
 
         when(mapper.toDTO(any())).thenReturn(orderDTO);

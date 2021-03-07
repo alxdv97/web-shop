@@ -30,6 +30,7 @@ public class Product {
     @Column(name = "description")
     private String description;
 
+    @EqualsAndHashCode.Exclude
     @Builder.Default
     @ManyToMany(mappedBy = "products")
     private Set<Order> orders = new HashSet<>();

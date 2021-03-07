@@ -34,7 +34,6 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.getAllCustomers().stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList()), HttpStatus.OK);
-
     }
 
     @GetMapping(value = "/{id}")

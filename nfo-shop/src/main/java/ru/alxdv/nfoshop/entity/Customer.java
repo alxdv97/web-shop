@@ -30,6 +30,7 @@ public class Customer implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "customer",
             cascade = CascadeType.ALL,
             orphanRemoval = true,

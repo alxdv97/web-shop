@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: alxdv
+      changes:
+        - tagDatabase:
+            tag: db_init
+  - include:
+      file: v-1.0/db.changelog-v.1.0.yaml
+      relativeToChangelogFile: true
+  - changeSet:
+      id: 1
+      author: alxdv
+      changes:
+        - tagDatabase:
+            tag: create-table
+
+  - include:
+      file: v-2.0/db.changelog-v.2.0.yaml
+      relativeToChangelogFile: true
+  - changeSet:
+      id: 2
+      author: alxdv
+      changes:
+        - tagDatabase:
+            tag: sample-data

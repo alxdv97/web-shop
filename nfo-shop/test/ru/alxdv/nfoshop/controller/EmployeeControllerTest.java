@@ -11,12 +11,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.EmployeeDTO;
 import ru.alxdv.nfoshop.entity.Employee;
+import ru.alxdv.nfoshop.feign.UserAuthService;
+import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
 import ru.alxdv.nfoshop.mapper.EmployeeMapper;
 import ru.alxdv.nfoshop.service.EmployeeService;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -37,6 +40,12 @@ public class EmployeeControllerTest {
 
     @MockBean
     private EmployeeService service;
+
+    @MockBean
+    private UserAuthService authService;
+
+    @MockBean
+    private AuthHandlerInterceptor authHandlerInterceptor;
 
     private EmployeeDTO employeeDTO;
 
@@ -66,6 +75,10 @@ public class EmployeeControllerTest {
                 .phone("+00000000000")
                 .position("dtoPosition")
                 .build();
+
+        when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
+
+        when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
 
         when(mapper.toDTO(any())).thenReturn(employeeDTO);
         when(mapper.toEntity(any())).thenReturn(employee);
