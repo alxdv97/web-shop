@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.alxdv.nfoshop.dto.OrderDTO;
 import ru.alxdv.nfoshop.entity.Customer;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
 
@@ -24,8 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,6 +41,9 @@ public class OrderServiceTest {
     @MockBean
     private EmployeeRepository employeeRepo;
 
+    @MockBean
+    private OrderMapper mapper;
+
     private List<Order> orderDB;
 
     private Customer customer;
@@ -50,6 +54,13 @@ public class OrderServiceTest {
 
     @Before
     public void setUp(){
+
+        OrderDTO orderDTO = OrderDTO.builder()
+                .customerId(1L)
+                .employeeId(1L)
+                .creationDate(Timestamp.valueOf(LocalDateTime.now()))
+                .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
+                .build();
 
         customer = Customer.builder()
                 .id(1L)
@@ -103,6 +114,10 @@ public class OrderServiceTest {
                 .products(Set.of(product))
                 .build();
 
+        when(mapper.toDTO(any())).thenReturn(orderDTO);
+        when(mapper.toEntity(any())).thenReturn(order1);
+        doNothing().when(mapper).updateFromDtoToEntity(any(), any());
+
         orderDB = new ArrayList<>(List.of(order1, order2, order3));
 
         when(repo.findAll()).thenReturn(orderDB);
@@ -114,23 +129,23 @@ public class OrderServiceTest {
 
         doAnswer(i -> {
             Long id = i.getArgument(0, Long.class);
-            Order order = getOrderFromDB(id);
-            orderDB.remove(order);
+            Order orderFromDB = getOrderFromDB(id);
+            orderDB.remove(orderFromDB);
             return null;
         }).when(repo).deleteById(anyLong());
 
         when(repo.save(any(Order.class))).thenAnswer(i -> {
-            Order order = i.getArgument(0, Order.class);
-            orderDB.add(order);
-            return order;
+            Order orderToSave = i.getArgument(0, Order.class);
+            orderDB.add(orderToSave);
+            return orderToSave;
         });
 
-        when(employeeRepo.findAll()).thenReturn(List.of(new Employee()));
+        when(employeeRepo.findAll()).thenReturn(List.of(employee));
     }
 
     @Test
     public void getAllOrdersTest(){
-        List<Order> allOrders = service.getAllOrders();
+        List<OrderDTO> allOrders = service.getAllOrders();
 
         assertNotNull(allOrders);
         assertEquals(3, allOrders.size());
@@ -138,13 +153,11 @@ public class OrderServiceTest {
 
     @Test
     public void createOrderTest(){
-        Order order4 = Order.builder()
-                .id(4L)
-                .customer(customer)
-                .employee(employee)
+        OrderDTO order4 = OrderDTO.builder()
+                .customerId(customer.getId())
+                .employeeId(employee.getId())
                 .creationDate(Timestamp.valueOf(LocalDateTime.now()))
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
-                .products(Set.of(product))
                 .build();
 
         Long orderId = service.createOrder(order4);
@@ -155,22 +168,20 @@ public class OrderServiceTest {
 
     @Test
     public void getOrderTest(){
-        Order order = service.getOrder(1L);
+        OrderDTO order = service.getOrder(1L);
 
         assertNotNull(order);
-        assertEquals(1L, order.getId().longValue());
+        assertEquals(1L, order.getCustomerId().longValue());
     }
 
     @Test
     public void updateOrderTest(){
-        Long updatedOrderId = service.updateOrder(Order.builder()
-                .id(3L)
-                .customer(new Customer())
-                .employee(new Employee())
+        Long updatedOrderId = service.updateOrder(OrderDTO.builder()
+                .customerId(4L)
+                .employeeId(4L)
                 .creationDate(Timestamp.valueOf(LocalDateTime.now()))
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
-                .products(Set.of(product))
-                .build());
+                .build(), 3L);
 
         assertNotNull(updatedOrderId);
         assertEquals(3L, updatedOrderId.longValue());
@@ -185,11 +196,11 @@ public class OrderServiceTest {
 
     @Test
     public void assignEmployeeToOrderTest(){
-        Order orderWithoutEmployee = Order.builder().build();
+        OrderDTO orderWithoutEmployee = OrderDTO.builder().build();
 
-        Order orderWithEmployee = service.assignEmployeeToOrder(orderWithoutEmployee);
+        OrderDTO orderWithEmployee = service.assignEmployeeToOrder(orderWithoutEmployee);
 
-        assertNotNull(orderWithEmployee.getEmployee());
+        assertNotNull(orderWithEmployee.getEmployeeId());
 
     }
 

@@ -8,11 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.CustomerDTO;
-import ru.alxdv.nfoshop.mapper.CustomerMapper;
 import ru.alxdv.nfoshop.service.CustomerService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/customers")
@@ -22,18 +20,13 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @Autowired
-    private CustomerMapper mapper;
-
     @GetMapping
     @Operation(
             summary = "Get all customers",
             description = "Returns all customers"
     )
     public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-        return new ResponseEntity<>(customerService.getAllCustomers().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
@@ -42,8 +35,8 @@ public class CustomerController {
             description = "Return customer by ID"
     )
     public ResponseEntity<CustomerDTO> getCustomer(@Parameter(description = "Customer's ID")
-                                   @PathVariable Long id) {
-        return new ResponseEntity<>(mapper.toDTO(customerService.getCustomer(id)), HttpStatus.OK);
+                                                   @PathVariable Long id) {
+        return new ResponseEntity<>(customerService.getCustomer(id), HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,8 +45,8 @@ public class CustomerController {
             description = "Create customer and return his ID"
     )
     public ResponseEntity<Long> createCustomer(@Parameter(description = "Customer")
-                                      @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(customerService.createCustomer(mapper.toEntity(customerDTO)),
+                                               @RequestBody CustomerDTO customerDTO) {
+        return new ResponseEntity<>(customerService.createCustomer(customerDTO),
                 HttpStatus.CREATED);
     }
 
@@ -62,9 +55,11 @@ public class CustomerController {
             summary = "Update customer",
             description = "Update customer and return his ID"
     )
-    public ResponseEntity<Long> updateCustomer(@Parameter(description = "Customer")
-                                      @RequestBody CustomerDTO customerDTO) {
-        return new ResponseEntity<>(customerService.updateCustomer(mapper.toEntity(customerDTO)),
+    public ResponseEntity<Long> updateCustomer(@Parameter(description = "Customer data")
+                                               @RequestBody CustomerDTO customerDTO,
+                                               @Parameter(description = "Customer ID")
+                                               @RequestParam Long customerId) {
+        return new ResponseEntity<>(customerService.updateCustomer(customerDTO, customerId),
                 HttpStatus.CREATED);
     }
 
@@ -74,7 +69,7 @@ public class CustomerController {
             description = "Delete customer by ID"
     )
     public ResponseEntity deleteCustomer(@Parameter(description = "Customer's ID")
-                               @PathVariable Long id) {
+                                         @PathVariable Long id) {
         customerService.deleteCustomerById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

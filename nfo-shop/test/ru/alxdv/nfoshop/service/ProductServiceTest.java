@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.alxdv.nfoshop.dto.ProductDTO;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.mapper.ProductMapper;
 import ru.alxdv.nfoshop.repository.ProductRepository;
 
 import java.util.ArrayList;
@@ -19,8 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,6 +33,9 @@ public class ProductServiceTest {
     @MockBean
     private ProductRepository repo;
 
+    @MockBean
+    private ProductMapper mapper;
+
     private List<Product> productDB;
 
     private Order order;
@@ -39,6 +43,12 @@ public class ProductServiceTest {
     @Before
     public void setUp(){
         order = Order.builder().build();
+
+        ProductDTO productDTO = ProductDTO.builder()
+                .price(10.0)
+                .name("product1")
+                .description("product 1 description")
+                .build();
 
         Product product1 = Product.builder()
                 .id(1L)
@@ -64,6 +74,10 @@ public class ProductServiceTest {
                 .orders(Set.of(order))
                 .build();
 
+        when(mapper.toDTO(any())).thenReturn(productDTO);
+        when(mapper.toEntity(any())).thenReturn(product1);
+        doNothing().when(mapper).updateFromDtoToEntity(any(), any());
+
         productDB = new ArrayList<>(List.of(product1, product2, product3));
 
         when(repo.findAll()).thenReturn(productDB);
@@ -75,21 +89,21 @@ public class ProductServiceTest {
 
         doAnswer(i -> {
             Long id = i.getArgument(0, Long.class);
-            Product product = getProductFromDB(id);
-            productDB.remove(product);
+            Product productFromDB = getProductFromDB(id);
+            productDB.remove(productFromDB);
             return null;
         }).when(repo).deleteById(anyLong());
 
         when(repo.save(any(Product.class))).thenAnswer(i -> {
-            Product product = i.getArgument(0, Product.class);
-            productDB.add(product);
-            return product;
+            Product productToSave = i.getArgument(0, Product.class);
+            productDB.add(productToSave);
+            return productToSave;
         });
     }
 
     @Test
     public void getAllProductsTest(){
-        List<Product> allProducts = service.getAllProducts();
+        List<ProductDTO> allProducts = service.getAllProducts();
 
         assertNotNull(allProducts);
         assertEquals(3L, allProducts.size());
@@ -97,12 +111,10 @@ public class ProductServiceTest {
 
     @Test
     public void createProductTest(){
-        Product product4 = Product.builder()
-                .id(4L)
+        ProductDTO product4 = ProductDTO.builder()
                 .price(40.0)
                 .name("product4")
                 .description("product 4 description")
-                .orders(Set.of(order))
                 .build();
 
         Long productId = service.createProduct(product4);
@@ -113,21 +125,19 @@ public class ProductServiceTest {
 
     @Test
     public void getProductTest(){
-        Product product = service.getProduct(1L);
+        ProductDTO product = service.getProduct(1L);
 
         assertNotNull(product);
-        assertEquals(1L, product.getId().longValue());
+        assertEquals("product1", product.getName());
     }
 
     @Test
     public void updateProductTest(){
-        Long updatedProductId = service.updateProduct(Product.builder()
-                .id(3L)
+        Long updatedProductId = service.updateProduct(ProductDTO.builder()
                 .price(300.0)
                 .name("product3Updated")
                 .description("product 3 updated")
-                .orders(Set.of(order))
-                .build());
+                .build(), 3L);
 
         assertNotNull(updatedProductId);
         assertEquals(3L, updatedProductId.longValue());

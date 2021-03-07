@@ -10,13 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.OrderDTO;
-import ru.alxdv.nfoshop.entity.Customer;
-import ru.alxdv.nfoshop.entity.Employee;
-import ru.alxdv.nfoshop.entity.Order;
-import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.dto.ProductDTO;
 import ru.alxdv.nfoshop.feign.UserAuthService;
 import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
-import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.service.OrderService;
 
 import java.sql.Timestamp;
@@ -40,9 +36,6 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OrderMapper mapper;
-
-    @MockBean
     private OrderService service;
 
     @MockBean
@@ -51,48 +44,42 @@ public class OrderControllerTest {
     @MockBean
     private AuthHandlerInterceptor authHandlerInterceptor;
 
-    private OrderDTO orderDTO;
+    private OrderDTO order;
 
     private String orderJson;
 
+    private Long orderId;
+
     @Before
     public void setUp() {
-        orderDTO = new OrderDTO();
-        orderDTO.setId(1L);
-        orderDTO.setEmployeeId(1L);
-        orderDTO.setCustomerId(1L);
-
 
         orderJson = "{\n" +
                 "    \"customerId\": 1,\n" +
                 "    \"employeeId\": 1\n" +
                 "}";
 
-        Order order = Order.builder()
-                .id(1L)
-                .customer(Customer.builder().id(1L).build())
-                .employee(Employee.builder().id(1L).build())
+        order = OrderDTO.builder()
+                .customerId(1L)
+                .employeeId(1L)
                 .creationDate(Timestamp.valueOf(LocalDateTime.now()))
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
-                .products(Set.of(Product.builder().build()))
+                .products(Set.of(ProductDTO.builder().build()))
                 .build();
+
+        orderId = 1L;
 
         when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
 
         when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
-
-
-        when(mapper.toDTO(any())).thenReturn(orderDTO);
-        when(mapper.toEntity(any())).thenReturn(order);
 
         when(service.getAllOrders()).thenReturn(List.of(order,
                 order, order));
 
         when(service.getOrder(anyLong())).thenReturn(order);
 
-        when(service.createOrder(any(Order.class))).thenReturn(order.getId());
+        when(service.createOrder(any(OrderDTO.class))).thenReturn(orderId);
 
-        when(service.updateOrder(any(Order.class))).thenReturn(order.getId());
+        when(service.updateOrder(any(OrderDTO.class), anyLong())).thenReturn(orderId);
 
         doNothing().when(service).deleteOrderById(anyLong());
     }
@@ -113,7 +100,7 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(orderDTO.getId()))
+                .andExpect(jsonPath("$.customerId").value(order.getCustomerId()))
                 .andReturn();
     }
 
@@ -125,25 +112,25 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(orderDTO.getId().toString()))
+                .andExpect(content().string(orderId.toString()))
                 .andReturn();
     }
 
     @Test
     public void updateOrderTest() throws Exception {
-        mockMvc.perform(put("/api/orders")
+        mockMvc.perform(put("/api/orders?orderId=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(orderJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(orderDTO.getId().toString()))
+                .andExpect(content().string(orderId.toString()))
                 .andReturn();
     }
 
     @Test
     public void deleteOrderTest() throws Exception {
-        mockMvc.perform(delete("/api/orders/{id}","1")
+        mockMvc.perform(delete("/api/orders/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(orderJson))
                 .andDo(print())

@@ -2,9 +2,11 @@ package ru.alxdv.nfoshop.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.alxdv.nfoshop.dto.OrderDTO;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
 import ru.alxdv.nfoshop.repository.ProductRepository;
@@ -14,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultOrderService implements OrderService {
@@ -29,27 +32,35 @@ public class DefaultOrderService implements OrderService {
     @Autowired
     private ProductRepository productRepo;
 
+    @Autowired
+    private OrderMapper mapper;
+
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepo.findAll();
+    public List<OrderDTO> getAllOrders() {
+        return orderRepo.findAll()
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Long createOrder(Order order) {
+    public Long createOrder(OrderDTO order) {
         order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
         order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
 
-        return orderRepo.save(assignEmployeeToOrder(order)).getId();
+        return orderRepo.save(mapper.toEntity(assignEmployeeToOrder(order))).getId();
     }
 
     @Override
-    public Order getOrder(Long id) {
-        return orderRepo.getOne(id);
+    public OrderDTO getOrder(Long id) {
+        return mapper.toDTO(orderRepo.getOne(id));
     }
 
     @Override
-    public Long updateOrder(Order order) {
-        return orderRepo.save(order).getId();
+    public Long updateOrder(OrderDTO order, Long id) {
+        Order orderFromDb = orderRepo.getOne(id);
+        mapper.updateFromDtoToEntity(order, orderFromDb);
+        return orderRepo.save(orderFromDb).getId();
     }
 
     @Override
@@ -58,24 +69,27 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public Order addProductToOrder(Long orderId, Long productId) {
+    public OrderDTO addProductToOrder(Long orderId, Long productId) {
         Product product = productRepo.getOne(productId);
         Order order = orderRepo.getOne(orderId);
         order.addProduct(product);
-        return orderRepo.save(order);
+        return mapper.toDTO(orderRepo.save(order));
     }
 
     @Override
-    public List<Order> getOrdersByCustomerId(Long id) {
-        return orderRepo.findOrdersByCustomerId(id);
+    public List<OrderDTO> getOrdersByCustomerId(Long id) {
+        return orderRepo.findOrdersByCustomerId(id)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     //Modeling assigning-to-employee process
     @Override
-    public Order assignEmployeeToOrder(Order order) {
+    public OrderDTO assignEmployeeToOrder(OrderDTO order) {
         List<Employee> allEmployees = employeeRepo.findAll();
         Random rand = new Random();
-        order.setEmployee(allEmployees.get(rand.nextInt(allEmployees.size())));
+        order.setEmployeeId(allEmployees.get(rand.nextInt(allEmployees.size())).getId());
         return order;
     }
 }

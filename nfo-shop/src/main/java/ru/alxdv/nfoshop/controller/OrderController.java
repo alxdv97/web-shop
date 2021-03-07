@@ -8,11 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.OrderDTO;
-import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.service.OrderService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/orders")
@@ -22,18 +20,13 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private OrderMapper mapper;
-
     @GetMapping
     @Operation(
             summary = "Get all orders",
             description = "Returns all orders"
     )
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return new ResponseEntity<>(orderService.getAllOrders().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList()),HttpStatus.OK);
+        return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
@@ -42,8 +35,8 @@ public class OrderController {
             description = "Return order by ID"
     )
     public ResponseEntity<OrderDTO> getOrder(@Parameter(description = "Order's ID")
-                                   @PathVariable Long id) {
-        return new ResponseEntity<>(mapper.toDTO(orderService.getOrder(id)), HttpStatus.OK);
+                                             @PathVariable Long id) {
+        return new ResponseEntity<>(orderService.getOrder(id), HttpStatus.OK);
     }
 
     @GetMapping("/by-customer")
@@ -52,11 +45,8 @@ public class OrderController {
             description = "Return all orders by customer ID"
     )
     public ResponseEntity<List<OrderDTO>> getCustomerOrders(@Parameter(description = "Customer's ID")
-                                            @RequestParam Long customerId) {
-        return new ResponseEntity<>(orderService.getOrdersByCustomerId(customerId)
-                .stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
+                                                            @RequestParam Long customerId) {
+        return new ResponseEntity<>(orderService.getOrdersByCustomerId(customerId), HttpStatus.OK);
     }
 
     @PostMapping
@@ -65,9 +55,8 @@ public class OrderController {
             description = "Create order and return its ID"
     )
     public ResponseEntity<Long> createOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO order) {
-        return new ResponseEntity<>(orderService.createOrder(mapper.toEntity(order)),
-                HttpStatus.CREATED);
+                                            @RequestBody OrderDTO order) {
+        return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -75,10 +64,11 @@ public class OrderController {
             summary = "Update order",
             description = "Update order and return its ID"
     )
-    public ResponseEntity<Long> updateOrder(@Parameter(description = "Order")
-                                      @RequestBody OrderDTO orderDTO) {
-        return new ResponseEntity<>(orderService.updateOrder(mapper.toEntity(orderDTO)),
-                HttpStatus.CREATED);
+    public ResponseEntity<Long> updateOrder(@Parameter(description = "Order data")
+                                            @RequestBody OrderDTO orderDTO,
+                                            @Parameter(description = "Order ID")
+                                            @RequestParam Long orderId) {
+        return new ResponseEntity<>(orderService.updateOrder(orderDTO, orderId), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -87,7 +77,7 @@ public class OrderController {
             description = "Delete order by ID"
     )
     public ResponseEntity deleteOrder(@Parameter(description = "Order's ID")
-                               @PathVariable Long id) {
+                                      @PathVariable Long id) {
         orderService.deleteOrderById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

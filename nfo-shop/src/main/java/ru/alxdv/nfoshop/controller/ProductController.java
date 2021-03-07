@@ -22,18 +22,13 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductMapper mapper;
-
     @GetMapping
     @Operation(
             summary = "Get all products",
             description = "Returns all products"
     )
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return new ResponseEntity<>(productService.getAllProducts().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList()),HttpStatus.OK);
+        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
@@ -42,8 +37,8 @@ public class ProductController {
             description = "Return product by ID"
     )
     public ResponseEntity<ProductDTO> getProduct(@Parameter(description = "Product's ID")
-                                   @PathVariable Long id) {
-        return new ResponseEntity<>(mapper.toDTO(productService.getProduct(id)),HttpStatus.OK);
+                                                 @PathVariable Long id) {
+        return new ResponseEntity<>(productService.getProduct(id),HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,8 +47,8 @@ public class ProductController {
             description = "Create product and return its ID"
     )
     public ResponseEntity<Long> createProduct(@Parameter(description = "Product")
-                                      @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(productService.createProduct(mapper.toEntity(productDTO)),
+                                              @RequestBody ProductDTO productDTO) {
+        return new ResponseEntity<>(productService.createProduct(productDTO),
                 HttpStatus.CREATED);
     }
 
@@ -62,9 +57,11 @@ public class ProductController {
             summary = "Update product",
             description = "Update product and return its ID"
     )
-    public ResponseEntity<Long> updateProduct(@Parameter(description = "Product")
-                                      @RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(productService.updateProduct(mapper.toEntity(productDTO)),
+    public ResponseEntity<Long> updateProduct(@Parameter(description = "Product data")
+                                              @RequestBody ProductDTO productDTO,
+                                              @Parameter(description = "Product ID")
+                                              @RequestParam Long productId) {
+        return new ResponseEntity<>(productService.updateProduct(productDTO, productId),
                 HttpStatus.CREATED);
     }
 
@@ -74,7 +71,7 @@ public class ProductController {
             description = "Delete product by ID"
     )
     public ResponseEntity deleteProduct(@Parameter(description = "Product's ID")
-                               @PathVariable Long id) {
+                                        @PathVariable Long id) {
         productService.deleteProductById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

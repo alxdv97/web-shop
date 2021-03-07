@@ -10,10 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.EmployeeDTO;
-import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.feign.UserAuthService;
 import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
-import ru.alxdv.nfoshop.mapper.EmployeeMapper;
 import ru.alxdv.nfoshop.service.EmployeeService;
 
 import java.util.List;
@@ -36,9 +34,6 @@ public class EmployeeControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private EmployeeMapper mapper;
-
-    @MockBean
     private EmployeeService service;
 
     @MockBean
@@ -47,18 +42,14 @@ public class EmployeeControllerTest {
     @MockBean
     private AuthHandlerInterceptor authHandlerInterceptor;
 
-    private EmployeeDTO employeeDTO;
+    private EmployeeDTO employee;
 
     private String employeeJson;
 
+    private Long employeeId;
+
     @Before
     public void setUp() {
-        employeeDTO = new EmployeeDTO();
-        employeeDTO.setId(1L);
-        employeeDTO.setEmail("dto@email.com");
-        employeeDTO.setFirstName("Data");
-        employeeDTO.setLastName("Transfer Object");
-
         employeeJson = "{\n" +
                 "    \"email\": \"dto@email.com\",\n" +
                 "    \"firstName\": \"Data\",\n" +
@@ -67,8 +58,7 @@ public class EmployeeControllerTest {
                 "    \"position\": \"dtoPosition\"\n" +
                 "}";
 
-        Employee employee = Employee.builder()
-                .id(1L)
+        employee = EmployeeDTO.builder()
                 .email("dto@email.com")
                 .firstName("Data")
                 .lastName("Transfer Object")
@@ -76,21 +66,20 @@ public class EmployeeControllerTest {
                 .position("dtoPosition")
                 .build();
 
+        employeeId = 1L;
+
         when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
 
         when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
-
-        when(mapper.toDTO(any())).thenReturn(employeeDTO);
-        when(mapper.toEntity(any())).thenReturn(employee);
 
         when(service.getAllEmployees()).thenReturn(List.of(employee,
                 employee, employee));
 
         when(service.getEmployee(anyLong())).thenReturn(employee);
 
-        when(service.createEmployee(any(Employee.class))).thenReturn(employee.getId());
+        when(service.createEmployee(any(EmployeeDTO.class))).thenReturn(employeeId);
 
-        when(service.updateEmployee(any(Employee.class))).thenReturn(employee.getId());
+        when(service.updateEmployee(any(EmployeeDTO.class), anyLong())).thenReturn(employeeId);
 
         doNothing().when(service).deleteEmployeeById(anyLong());
     }
@@ -111,7 +100,7 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(employeeDTO.getId()))
+                .andExpect(jsonPath("$.email").value(employee.getEmail()))
                 .andReturn();
     }
 
@@ -123,25 +112,25 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(employeeDTO.getId().toString()))
+                .andExpect(content().string(employeeId.toString()))
                 .andReturn();
     }
 
     @Test
     public void updateEmployeeTest() throws Exception {
-        mockMvc.perform(put("/api/employees")
+        mockMvc.perform(put("/api/employees?employeeId=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(employeeJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(employeeDTO.getId().toString()))
+                .andExpect(content().string(employeeId.toString()))
                 .andReturn();
     }
 
     @Test
     public void deleteEmployeeTest() throws Exception {
-        mockMvc.perform(delete("/api/employees/{id}","1")
+        mockMvc.perform(delete("/api/employees/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(employeeJson))
                 .andDo(print())

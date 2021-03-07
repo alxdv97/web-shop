@@ -1,16 +1,16 @@
 package ru.alxdv.nfoshop.service;
 
-import ru.alxdv.nfoshop.entity.Order;
+import ru.alxdv.nfoshop.dto.OrderDTO;
 
 import java.util.List;
 
 public interface OrderService {
-    List<Order> getAllOrders();
-    Long createOrder(Order order);
-    Order getOrder(Long id);
-    Long updateOrder(Order order);
+    List<OrderDTO> getAllOrders();
+    Long createOrder(OrderDTO order);
+    OrderDTO getOrder(Long id);
+    Long updateOrder(OrderDTO order, Long id);
     void deleteOrderById(Long id);
-    Order addProductToOrder(Long orderId, Long productId);
-    List<Order> getOrdersByCustomerId(Long id);
-    Order assignEmployeeToOrder(Order order);
+    OrderDTO addProductToOrder(Long orderId, Long productId);
+    List<OrderDTO> getOrdersByCustomerId(Long id);
+    OrderDTO assignEmployeeToOrder(OrderDTO order);
 }

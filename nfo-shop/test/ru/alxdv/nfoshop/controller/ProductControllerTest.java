@@ -10,10 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.ProductDTO;
-import ru.alxdv.nfoshop.entity.Product;
 import ru.alxdv.nfoshop.feign.UserAuthService;
 import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
-import ru.alxdv.nfoshop.mapper.ProductMapper;
 import ru.alxdv.nfoshop.service.ProductService;
 
 import java.util.List;
@@ -33,9 +31,6 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ProductMapper mapper;
-
-    @MockBean
     private ProductService service;
 
     @MockBean
@@ -44,18 +39,14 @@ public class ProductControllerTest {
     @MockBean
     private AuthHandlerInterceptor authHandlerInterceptor;
 
-    private ProductDTO productDTO;
+    private ProductDTO product;
 
     private String productJson;
 
+    private Long productId;
 
     @Before
     public void setUp() {
-        productDTO = new ProductDTO();
-        productDTO.setId(1L);
-        productDTO.setName("product");
-        productDTO.setDescription("product description");
-        productDTO.setPrice(100.0);
 
         productJson = "{\n" +
                 "    \"name\": \"product\",\n" +
@@ -63,28 +54,26 @@ public class ProductControllerTest {
                 "    \"price\": \"100.0\"\n" +
                 "}";
 
-        Product product = Product.builder()
-                .id(1L)
+        product = ProductDTO.builder()
                 .name("product")
                 .description("product description")
                 .price(100.0)
                 .build();
 
+        productId = 1L;
+
         when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
 
         when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
-
-        when(mapper.toDTO(any())).thenReturn(productDTO);
-        when(mapper.toEntity(any())).thenReturn(product);
 
         when(service.getAllProducts()).thenReturn(List.of(product,
                 product, product));
 
         when(service.getProduct(anyLong())).thenReturn(product);
 
-        when(service.createProduct(any(Product.class))).thenReturn(product.getId());
+        when(service.createProduct(any(ProductDTO.class))).thenReturn(productId);
 
-        when(service.updateProduct(any(Product.class))).thenReturn(product.getId());
+        when(service.updateProduct(any(ProductDTO.class), anyLong())).thenReturn(productId);
 
         doNothing().when(service).deleteProductById(anyLong());
     }
@@ -105,7 +94,7 @@ public class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(productDTO.getId()))
+                .andExpect(jsonPath("$.name").value(product.getName()))
                 .andReturn();
     }
 
@@ -117,25 +106,25 @@ public class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(productDTO.getId().toString()))
+                .andExpect(content().string(productId.toString()))
                 .andReturn();
     }
 
     @Test
     public void updateProductTest() throws Exception {
-        mockMvc.perform(put("/api/products")
+        mockMvc.perform(put("/api/products?productId=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(productJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(productDTO.getId().toString()))
+                .andExpect(content().string(productId.toString()))
                 .andReturn();
     }
 
     @Test
     public void deleteProductTest() throws Exception {
-        mockMvc.perform(delete("/api/products/{id}","1")
+        mockMvc.perform(delete("/api/products/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(productJson))
                 .andDo(print())

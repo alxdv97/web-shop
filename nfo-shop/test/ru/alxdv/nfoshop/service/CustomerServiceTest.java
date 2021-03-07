@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.alxdv.nfoshop.dto.CustomerDTO;
 import ru.alxdv.nfoshop.entity.Customer;
+import ru.alxdv.nfoshop.mapper.CustomerMapper;
 import ru.alxdv.nfoshop.repository.CustomerRepository;
 
 import java.util.ArrayList;
@@ -27,10 +29,20 @@ public class CustomerServiceTest {
     @MockBean
     private CustomerRepository repo;
 
+    @MockBean
+    private CustomerMapper mapper;
+
     private List<Customer> customerDB;
 
     @Before
     public void setUp(){
+
+        CustomerDTO customerDTO = CustomerDTO.builder()
+                .email("dto@email.com")
+                .firstName("Data")
+                .lastName("Transfer Object")
+                .build();
+
         Customer customer1 = Customer.builder()
                 .id(1L)
                 .email("customer1@email.com")
@@ -58,6 +70,10 @@ public class CustomerServiceTest {
                 .phone("+33333333333")
                 .build();
 
+        when(mapper.toDTO(any())).thenReturn(customerDTO);
+        when(mapper.toEntity(any())).thenReturn(customer1);
+        doNothing().when(mapper).updateFromDtoToEntity(any(), any());
+
         customerDB = new ArrayList<>(List.of(customer1, customer2, customer3));
 
         when(repo.findAll()).thenReturn(customerDB);
@@ -69,21 +85,21 @@ public class CustomerServiceTest {
 
         doAnswer(i -> {
             Long id = i.getArgument(0, Long.class);
-            Customer customer = getCustomerFromDB(id);
-            customerDB.remove(customer);
+            Customer customerFromDB = getCustomerFromDB(id);
+            customerDB.remove(customerFromDB);
             return null;
         }).when(repo).deleteById(anyLong());
 
         when(repo.save(any(Customer.class))).thenAnswer(i -> {
-            Customer customer = i.getArgument(0, Customer.class);
-            customerDB.add(customer);
-            return customer;
+            Customer customerToSave = i.getArgument(0, Customer.class);
+            customerDB.add(customerToSave);
+            return customerToSave;
         });
     }
 
     @Test
     public void getAllCustomersTest(){
-        List<Customer> allCustomers = service.getAllCustomers();
+        List<CustomerDTO> allCustomers = service.getAllCustomers();
 
         assertNotNull(allCustomers);
         assertEquals(3, allCustomers.size());
@@ -91,8 +107,7 @@ public class CustomerServiceTest {
 
     @Test
     public void createCustomerTest(){
-        Customer customer4 = Customer.builder()
-                .id(4L)
+        CustomerDTO customer4 = CustomerDTO.builder()
                 .email("customer4@email.com")
                 .address("Customer 4 Address")
                 .firstName("Customer")
@@ -108,22 +123,21 @@ public class CustomerServiceTest {
 
     @Test
     public void getCustomerTest(){
-        Customer customer = service.getCustomer(1L);
+        CustomerDTO customer = service.getCustomer(1L);
 
         assertNotNull(customer);
-        assertEquals(1L, customer.getId().longValue());
+        assertEquals("dto@email.com", customer.getEmail());
     }
 
     @Test
     public void updateCustomerTest(){
-        Long updatedCustomerId = service.updateCustomer(Customer.builder()
-                .id(3L)
+        Long updatedCustomerId = service.updateCustomer(CustomerDTO.builder()
                 .email("customer3@email.comChanged")
                 .address("Customer 3 Address Changed")
                 .firstName("Customer Changed")
                 .lastName("Three Changed")
                 .phone("+33333333333")
-                .build());
+                .build(), 3L);
 
         assertNotNull(updatedCustomerId);
         assertEquals(3L, updatedCustomerId.longValue());
