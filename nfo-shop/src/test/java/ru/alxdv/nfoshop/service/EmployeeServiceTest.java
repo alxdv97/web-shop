@@ -11,6 +11,7 @@ import ru.alxdv.nfoshop.dto.EmployeeDTO;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.mapper.EmployeeMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
+import ru.alxdv.nfoshop.service.impl.DefaultEmployeeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = DefaultEmployeeService.class)
 public class EmployeeServiceTest {
 
     @Autowired
@@ -36,12 +37,10 @@ public class EmployeeServiceTest {
 
     private List<Employee> employeeDB;
 
-    private EmployeeDTO employeeDTO;
-
     @Before
     public void setUp(){
 
-        employeeDTO = EmployeeDTO.builder()
+        EmployeeDTO employeeDTO = EmployeeDTO.builder()
                 .email("dto@email.com")
                 .firstName("Data")
                 .lastName("Transfer Object")

@@ -11,6 +11,7 @@ import ru.alxdv.nfoshop.dto.CustomerDTO;
 import ru.alxdv.nfoshop.entity.Customer;
 import ru.alxdv.nfoshop.mapper.CustomerMapper;
 import ru.alxdv.nfoshop.repository.CustomerRepository;
+import ru.alxdv.nfoshop.service.impl.DefaultCustomerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = DefaultCustomerService.class)
 public class CustomerServiceTest {
 
     @Autowired

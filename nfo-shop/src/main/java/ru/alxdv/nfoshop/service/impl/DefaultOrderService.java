@@ -6,6 +6,7 @@ import ru.alxdv.nfoshop.dto.OrderDTO;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
+import ru.alxdv.nfoshop.exception.NfoException;
 import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
@@ -88,6 +89,9 @@ public class DefaultOrderService implements OrderService {
     @Override
     public OrderDTO assignEmployeeToOrder(OrderDTO order) {
         List<Employee> allEmployees = employeeRepo.findAll();
+        if (allEmployees.isEmpty()){
+            throw new NfoException("Cannot assign employee to order! No employee found.");
+        }
         Random rand = new Random();
         order.setEmployeeId(allEmployees.get(rand.nextInt(allEmployees.size())).getId());
         return order;

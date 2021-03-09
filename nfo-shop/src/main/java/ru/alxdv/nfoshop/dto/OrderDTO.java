@@ -3,6 +3,7 @@ package ru.alxdv.nfoshop.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ public class OrderDTO {
     @Schema(description = "Order's employee ID", example = "1")
     private Long employeeId;
 
+    @Valid
     @Schema(description = "Order's products")
     private Set<ProductDTO> products;
 }

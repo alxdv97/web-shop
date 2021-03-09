@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.persistence.Column;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -48,6 +49,7 @@ public class CustomerDTO {
             message = "Address should be less than 500 characters")
     private String address;
 
+    @Valid
     @Schema(description = "Customer's orders")
     private Set<OrderDTO> orders;
 }

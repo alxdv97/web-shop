@@ -3,6 +3,7 @@ package ru.alxdv.nfoshop.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -46,6 +47,7 @@ public class EmployeeDTO {
             message = "Position should be less than 30 characters")
     private String position;
 
+    @Valid
     @Schema(description = "Employee's orders")
     private Set<OrderDTO> orders;
 }

@@ -6,17 +6,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.ProductDTO;
 import ru.alxdv.nfoshop.mapper.ProductMapper;
 import ru.alxdv.nfoshop.service.ProductService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/products")
 @Tag(name = "Product controller", description = "Provides product API")
+@Validated
 public class ProductController {
 
     @Autowired
@@ -37,7 +41,7 @@ public class ProductController {
             description = "Return product by ID"
     )
     public ResponseEntity<ProductDTO> getProduct(@Parameter(description = "Product's ID")
-                                                 @PathVariable Long id) {
+                                                 @PathVariable @Positive Long id) {
         return new ResponseEntity<>(productService.getProduct(id),HttpStatus.OK);
     }
 
@@ -47,7 +51,7 @@ public class ProductController {
             description = "Create product and return its ID"
     )
     public ResponseEntity<Long> createProduct(@Parameter(description = "Product")
-                                              @RequestBody ProductDTO productDTO) {
+                                              @RequestBody @Valid ProductDTO productDTO) {
         return new ResponseEntity<>(productService.createProduct(productDTO),
                 HttpStatus.CREATED);
     }
@@ -58,9 +62,9 @@ public class ProductController {
             description = "Update product and return its ID"
     )
     public ResponseEntity<Long> updateProduct(@Parameter(description = "Product data")
-                                              @RequestBody ProductDTO productDTO,
+                                              @RequestBody @Valid ProductDTO productDTO,
                                               @Parameter(description = "Product ID")
-                                              @RequestParam Long productId) {
+                                              @RequestParam @Positive Long productId) {
         return new ResponseEntity<>(productService.updateProduct(productDTO, productId),
                 HttpStatus.CREATED);
     }
@@ -71,7 +75,7 @@ public class ProductController {
             description = "Delete product by ID"
     )
     public ResponseEntity deleteProduct(@Parameter(description = "Product's ID")
-                                        @PathVariable Long id) {
+                                        @PathVariable @Positive Long id) {
         productService.deleteProductById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -12,6 +12,7 @@ import ru.alxdv.nfoshop.entity.Order;
 import ru.alxdv.nfoshop.entity.Product;
 import ru.alxdv.nfoshop.mapper.ProductMapper;
 import ru.alxdv.nfoshop.repository.ProductRepository;
+import ru.alxdv.nfoshop.service.impl.DefaultProductService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = DefaultProductService.class)
 public class ProductServiceTest {
 
     @Autowired
@@ -38,11 +39,9 @@ public class ProductServiceTest {
 
     private List<Product> productDB;
 
-    private Order order;
-
     @Before
     public void setUp(){
-        order = Order.builder().build();
+        Order order = Order.builder().build();
 
         ProductDTO productDTO = ProductDTO.builder()
                 .price(10.0)

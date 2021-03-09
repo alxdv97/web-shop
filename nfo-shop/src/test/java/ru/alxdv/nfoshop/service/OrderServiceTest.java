@@ -15,6 +15,8 @@ import ru.alxdv.nfoshop.entity.Product;
 import ru.alxdv.nfoshop.mapper.OrderMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.repository.OrderRepository;
+import ru.alxdv.nfoshop.repository.ProductRepository;
+import ru.alxdv.nfoshop.service.impl.DefaultOrderService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = DefaultOrderService.class)
 public class OrderServiceTest {
 
     @Autowired
@@ -39,18 +41,15 @@ public class OrderServiceTest {
     private OrderRepository repo;
 
     @MockBean
+    private ProductRepository productRepo;
+
+    @MockBean
     private EmployeeRepository employeeRepo;
 
     @MockBean
     private OrderMapper mapper;
 
     private List<Order> orderDB;
-
-    private Customer customer;
-
-    private Employee employee;
-
-    private Product product;
 
     @Before
     public void setUp(){
@@ -62,7 +61,7 @@ public class OrderServiceTest {
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
                 .build();
 
-        customer = Customer.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("customer@email.com")
                 .address("Customer Address")
@@ -71,7 +70,7 @@ public class OrderServiceTest {
                 .phone("+11111111111")
                 .build();
 
-        employee = Employee.builder()
+        Employee employee = Employee.builder()
                 .id(1L)
                 .email("employee@email.com")
                 .position("Employee Position")
@@ -80,7 +79,7 @@ public class OrderServiceTest {
                 .phone("+11111111111")
                 .build();
 
-        product = Product.builder()
+        Product product = Product.builder()
                 .id(1L)
                 .name("Product")
                 .description("Product description")
@@ -141,6 +140,7 @@ public class OrderServiceTest {
         });
 
         when(employeeRepo.findAll()).thenReturn(List.of(employee));
+        when(productRepo.getOne(anyLong())).thenReturn(product);
     }
 
     @Test
@@ -154,8 +154,8 @@ public class OrderServiceTest {
     @Test
     public void createOrderTest(){
         OrderDTO order4 = OrderDTO.builder()
-                .customerId(customer.getId())
-                .employeeId(employee.getId())
+                .customerId(1L)
+                .employeeId(1L)
                 .creationDate(Timestamp.valueOf(LocalDateTime.now()))
                 .deliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(2)))
                 .build();
