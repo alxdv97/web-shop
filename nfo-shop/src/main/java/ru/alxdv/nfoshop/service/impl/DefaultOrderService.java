@@ -48,8 +48,8 @@ public class DefaultOrderService implements OrderService {
     public Long createOrder(OrderDTO order) {
         order.setCreationDate(Timestamp.valueOf(LocalDateTime.now()));
         order.setDeliveryDate(Timestamp.valueOf(LocalDateTime.now().plusDays(DELIVERY_TIME_DAYS)));
-
-        return orderRepo.save(mapper.toEntity(assignEmployeeToOrder(order))).getId();
+        assignEmployeeToOrder(order);
+        return orderRepo.save(mapper.toEntity(order)).getId();
     }
 
     @Override
@@ -86,14 +86,12 @@ public class DefaultOrderService implements OrderService {
     }
 
     //Modeling assigning-to-employee process
-    @Override
-    public OrderDTO assignEmployeeToOrder(OrderDTO order) {
+    private void assignEmployeeToOrder(OrderDTO order) {
         List<Employee> allEmployees = employeeRepo.findAll();
         if (allEmployees.isEmpty()){
             throw new NfoException("Cannot assign employee to order! No employee found.");
         }
         Random rand = new Random();
         order.setEmployeeId(allEmployees.get(rand.nextInt(allEmployees.size())).getId());
-        return order;
     }
 }

@@ -194,16 +194,6 @@ public class OrderServiceTest {
         assertEquals(2L, orderDB.size());
     }
 
-    @Test
-    public void assignEmployeeToOrderTest(){
-        OrderDTO orderWithoutEmployee = OrderDTO.builder().build();
-
-        OrderDTO orderWithEmployee = service.assignEmployeeToOrder(orderWithoutEmployee);
-
-        assertNotNull(orderWithEmployee.getEmployeeId());
-
-    }
-
     private Order getOrderFromDB(Long id){
         return orderDB.stream()
                 .filter(c -> c.getId().equals(id))
