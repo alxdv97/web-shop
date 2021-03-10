@@ -10,6 +10,6 @@ FROM openjdk:11
 
 WORKDIR /app
 
-COPY --from=MAVEN_BUILD /build/target/nfo-client-0.0.1-SNAPSHOT.jar /app/
+COPY --from=MAVEN_BUILD /build/target/nfo-shop-0.0.1-SNAPSHOT.jar /app/
 
-ENTRYPOINT ["java", "-jar", "nfo-client-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "nfo-shop-0.0.1-SNAPSHOT.jar"]

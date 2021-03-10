@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+#  Shop App
+  nfo-shop:
+    image: 'nfo-shop:latest'
+    build:
+      context: ""
+      dockerfile: nfo-shop/Dockerfile
+    container_name: nfo-shop
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shop-db:5432/nfo-shop
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - shop-db
+      - nfo-client
+    links:
+      - shop-db
+  shop-db:
+    image: 'postgres:13.1-alpine'
+    network_mode: bridge
+    container_name: shop-db
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-shop
+    restart: unless-stopped
+# Auth app
+  nfo-client:
+    image: 'nfo-client:latest'
+    build:
+      context: ""
+      dockerfile: nfo-client/Dockerfile
+    container_name: nfo-client
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://client-db:5432/nfo-client
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    expose:
+      - 8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - client-db
+    links:
+      - client-db
+  client-db:
+    image: 'postgres:13.1-alpine'
+    network_mode: bridge
+    container_name: client-db
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-client
+    restart: unless-stopped
