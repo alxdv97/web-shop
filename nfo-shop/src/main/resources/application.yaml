@@ -12,4 +12,4 @@ spring:
 
 nfo-client:
   ribbon:
-    listOfServers: localhost:8081
+    listOfServers: nfo-client:8081
