@@ -10,10 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.alxdv.nfoshop.dto.CustomerDTO;
-import ru.alxdv.nfoshop.entity.Customer;
 import ru.alxdv.nfoshop.feign.UserAuthService;
 import ru.alxdv.nfoshop.interceptor.AuthHandlerInterceptor;
-import ru.alxdv.nfoshop.mapper.CustomerMapper;
 import ru.alxdv.nfoshop.service.CustomerService;
 
 import java.util.List;
@@ -31,9 +29,6 @@ public class CustomerControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CustomerMapper mapper;
-
-    @MockBean
     private CustomerService service;
 
     @MockBean
@@ -42,18 +37,14 @@ public class CustomerControllerTest {
     @MockBean
     private AuthHandlerInterceptor authHandlerInterceptor;
 
-
-    private CustomerDTO customerDTO;
+    private CustomerDTO customer;
 
     private String customerJson;
 
+    private Long customerId;
+
     @Before
     public void setUp() {
-        customerDTO = new CustomerDTO();
-        customerDTO.setId(1L);
-        customerDTO.setEmail("dto@email.com");
-        customerDTO.setFirstName("Data");
-        customerDTO.setLastName("Transfer Object");
 
         customerJson = "{\n" +
                 "    \"email\": \"dto@email.com\",\n" +
@@ -63,8 +54,7 @@ public class CustomerControllerTest {
                 "    \"address\": \"dtoAddress\"\n" +
                 "}";
 
-        Customer customer = Customer.builder()
-                .id(1L)
+        customer = CustomerDTO.builder()
                 .email("dto@email.com")
                 .firstName("Data")
                 .lastName("Transfer Object")
@@ -72,22 +62,20 @@ public class CustomerControllerTest {
                 .address("dtoAddress")
                 .build();
 
+        customerId = 1L;
+
         when(authService.auth(anyString())).thenReturn(Boolean.TRUE);
 
         when(authHandlerInterceptor.preHandle(any(), any(), any())).thenReturn(Boolean.TRUE);
-
-
-        when(mapper.toDTO(any())).thenReturn(customerDTO);
-        when(mapper.toEntity(any())).thenReturn(customer);
 
         when(service.getAllCustomers()).thenReturn(List.of(customer,
                 customer, customer));
 
         when(service.getCustomer(anyLong())).thenReturn(customer);
 
-        when(service.createCustomer(any(Customer.class))).thenReturn(customer.getId());
+        when(service.createCustomer(any(CustomerDTO.class))).thenReturn(customerId);
 
-        when(service.updateCustomer(any(Customer.class))).thenReturn(customer.getId());
+        when(service.updateCustomer(any(CustomerDTO.class), anyLong())).thenReturn(customerId);
 
         doNothing().when(service).deleteCustomerById(anyLong());
     }
@@ -108,7 +96,7 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(customerDTO.getId()))
+                .andExpect(jsonPath("$.email").value(customer.getEmail()))
                 .andReturn();
     }
 
@@ -120,19 +108,19 @@ public class CustomerControllerTest {
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(content().string(customerDTO.getId().toString()))
+                    .andExpect(content().string(customerId.toString()))
                     .andReturn();
     }
 
     @Test
     public void updateCustomerTest() throws Exception {
-        mockMvc.perform(put("/api/customers")
+        mockMvc.perform(put("/api/customers?customerId=1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(customerJson))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(customerDTO.getId().toString()))
+                .andExpect(content().string(customerId.toString()))
                 .andReturn();
     }
 
@@ -145,5 +133,4 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
     }
-
 }

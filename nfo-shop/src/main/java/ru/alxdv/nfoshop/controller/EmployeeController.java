@@ -6,24 +6,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.alxdv.nfoshop.dto.EmployeeDTO;
-import ru.alxdv.nfoshop.mapper.EmployeeMapper;
 import ru.alxdv.nfoshop.service.EmployeeService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/employees")
 @Tag(name = "Employee controller", description = "Provides employee API")
+@Validated
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-
-    @Autowired
-    private EmployeeMapper mapper;
 
     @GetMapping
     @Operation(
@@ -31,9 +30,7 @@ public class EmployeeController {
             description = "Returns all employees"
     )
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
-        return new ResponseEntity<>(employeeService.getAllEmployees().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getAllEmployees(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
@@ -42,8 +39,8 @@ public class EmployeeController {
             description = "Return employee by ID"
     )
     public ResponseEntity<EmployeeDTO> getEmployee(@Parameter(description = "Employee's ID")
-                                   @PathVariable Long id) {
-        return new ResponseEntity<>(mapper.toDTO(employeeService.getEmployee(id)), HttpStatus.OK);
+                                                   @PathVariable @Positive Long id) {
+        return new ResponseEntity<>(employeeService.getEmployee(id), HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,8 +49,8 @@ public class EmployeeController {
             description = "Create employee and return his ID"
     )
     public ResponseEntity<Long> createEmployee(@Parameter(description = "Employee")
-                                      @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(employeeService.createEmployee(mapper.toEntity(employeeDTO)),
+                                               @RequestBody @Valid EmployeeDTO employeeDTO) {
+        return new ResponseEntity<>(employeeService.createEmployee(employeeDTO),
                 HttpStatus.CREATED);
     }
 
@@ -62,9 +59,11 @@ public class EmployeeController {
             summary = "Update employee",
             description = "Update employee and return his ID"
     )
-    public ResponseEntity<Long> updateEmployee(@Parameter(description = "Employee")
-                                      @RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(employeeService.updateEmployee(mapper.toEntity(employeeDTO)),
+    public ResponseEntity<Long> updateEmployee(@Parameter(description = "Employee data")
+                                               @RequestBody @Valid EmployeeDTO employeeDTO,
+                                               @Parameter(description = "Employee ID")
+                                               @RequestParam @Positive Long employeeId) {
+        return new ResponseEntity<>(employeeService.updateEmployee(employeeDTO, employeeId),
                 HttpStatus.CREATED);
     }
 
@@ -74,7 +73,7 @@ public class EmployeeController {
             description = "Delete employee by ID"
     )
     public ResponseEntity deleteEmployee(@Parameter(description = "Employee's ID")
-                               @PathVariable Long id) {
+                                         @PathVariable @Positive Long id) {
         employeeService.deleteEmployeeById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

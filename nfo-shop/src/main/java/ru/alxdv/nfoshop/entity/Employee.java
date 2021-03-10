@@ -33,7 +33,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee",
             cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST},
             orphanRemoval = false,
-            fetch = FetchType.LAZY)
+            fetch = FetchType.EAGER)
     private Set<Order> orders;
 
     @Column(name = "phone")

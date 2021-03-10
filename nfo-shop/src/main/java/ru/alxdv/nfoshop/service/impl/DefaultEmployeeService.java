@@ -2,11 +2,14 @@ package ru.alxdv.nfoshop.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.alxdv.nfoshop.dto.EmployeeDTO;
 import ru.alxdv.nfoshop.entity.Employee;
+import ru.alxdv.nfoshop.mapper.EmployeeMapper;
 import ru.alxdv.nfoshop.repository.EmployeeRepository;
 import ru.alxdv.nfoshop.service.EmployeeService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultEmployeeService implements EmployeeService {
@@ -14,24 +17,32 @@ public class DefaultEmployeeService implements EmployeeService {
     @Autowired
     private EmployeeRepository repo;
 
+    @Autowired
+    private EmployeeMapper mapper;
+
     @Override
-    public List<Employee> getAllEmployees() {
-        return repo.findAll();
+    public List<EmployeeDTO> getAllEmployees() {
+        return repo.findAll()
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Long createEmployee(Employee employee) {
-        return repo.save(employee).getId();
+    public Long createEmployee(EmployeeDTO employee) {
+        return repo.save(mapper.toEntity(employee)).getId();
     }
 
     @Override
-    public Employee getEmployee(Long id) {
-        return repo.getOne(id);
+    public EmployeeDTO getEmployee(Long id) {
+        return mapper.toDTO(repo.getOne(id));
     }
 
     @Override
-    public Long updateEmployee(Employee employee) {
-        return repo.save(employee).getId();
+    public Long updateEmployee(EmployeeDTO employee, Long id) {
+        Employee employeeFromDb = repo.getOne(id);
+        mapper.updateFromDtoToEntity(employee, employeeFromDb);
+        return repo.save(employeeFromDb).getId();
     }
 
     @Override
