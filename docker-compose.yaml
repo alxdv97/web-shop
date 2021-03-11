@@ -4,7 +4,6 @@ services:
 #  Shop App
   nfo-shop:
     image: 'nfo-shop:latest'
-    build: ./nfo-shop
     container_name: nfo-shop
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://shop-db:5432/nfo-shop
@@ -28,7 +27,6 @@ services:
 # Auth app
   nfo-client:
     image: 'nfo-client:latest'
-    build: ./nfo-client
     container_name: nfo-client
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://client-db:5432/nfo-client
