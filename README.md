@@ -4,6 +4,7 @@
 <ol>
 <li>From /nfo-shop run <i>mvn package</i> command</li>
 <li>From /nfo-client run <i>mvn package</i> command</li>
+<li>From /nfo-store run <i>mvn package</i> command</li>
 <li>For up whole app run /web-shop run <i>docker-compose -f docker-compose.prod.yaml up
 </i> command from /web-shop</li>
 <li>For up only dbs run /web-shop run <i>docker-compose -f docker-compose.dev.yaml up
