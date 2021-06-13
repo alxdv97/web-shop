@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: createProductsTable
+      author: alxdv
+      changes:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 10-create-products-table.sql
+      rollback:
+        sqlFile:
+          encoding: utf-8
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+          path: 10-drop-products-table.sql

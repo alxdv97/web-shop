@@ -1,7 +1,11 @@
 package ru.alxdv.nfoshop.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import ru.alxdv.nfoshop.dto.OrderDTO;
 import ru.alxdv.nfoshop.entity.Employee;
 import ru.alxdv.nfoshop.entity.Order;
@@ -35,6 +39,9 @@ public class DefaultOrderService implements OrderService {
 
     @Autowired
     private OrderMapper mapper;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
     public List<OrderDTO> getAllOrders() {
@@ -93,5 +100,25 @@ public class DefaultOrderService implements OrderService {
         }
         Random rand = new Random();
         order.setEmployeeId(allEmployees.get(rand.nextInt(allEmployees.size())).getId());
+    }
+
+    @Override
+    public void sendMessage(String msg){
+        ListenableFuture<SendResult<String, String>> future =
+                kafkaTemplate.send("order", msg);
+
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                System.out.println("Sent message=[" + msg +
+                        "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                System.out.println("Unable to send message=["
+                        + msg + "] due to : " + ex.getMessage());
+            }
+        });
     }
 }

@@ -85,4 +85,16 @@ public class OrderController {
         orderService.deleteOrderById(id);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    //    TODO TMP method
+    @PostMapping("/{message}")
+    @Operation(
+            summary = "Sen message",
+            description = "Send message via Kafka"
+    )
+    public ResponseEntity sendMessage(@Parameter(description = "Message")
+                                            @PathVariable String message) {
+        orderService.sendMessage(message);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

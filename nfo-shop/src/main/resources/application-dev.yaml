@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://shop-db:5432/nfo-shop
+    url: jdbc:postgresql://localhost:5432/nfo-shop
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123
@@ -11,10 +11,10 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
   kafka:
     producer:
-      bootstrap-servers: kafka-store:9092
+      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 nfo-client:
   ribbon:
-    listOfServers: nfo-client:8081
+    listOfServers: localhost:8081

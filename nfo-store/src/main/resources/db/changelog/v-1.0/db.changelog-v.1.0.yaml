@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: 01-changeset-orders-table.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 10-changeset-products-table.yaml
+      relativeToChangelogFile: true

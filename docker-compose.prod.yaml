@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+#  Shop App
+  nfo-shop:
+    image: 'nfo-shop:latest'
+    container_name: nfo-shop
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shop-db:5432/nfo-shop
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    ports:
+      - 8080:8080
+    depends_on:
+      - shop-db
+      - kafka-store
+    links:
+      - shop-db
+  shop-db:
+    image: 'postgres:13.1-alpine'
+    container_name: shop-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-shop
+    restart: unless-stopped
+# Auth app
+  nfo-client:
+    image: 'nfo-client:latest'
+    container_name: nfo-client
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://client-db:5432/nfo-client
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    depends_on:
+      - client-db
+    links:
+      - client-db
+  client-db:
+    image: 'postgres:13.1-alpine'
+    container_name: client-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-client
+    restart: unless-stopped
+# Store app
+  nfo-store:
+    image: 'nfo-store:latest'
+    container_name: nfo-store
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://store-db:5432/nfo-store
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    depends_on:
+      - client-db
+      - kafka-store
+    links:
+      - client-db
+  store-db:
+    image: 'postgres:13.1-alpine'
+    container_name: store-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-store
+    restart: unless-stopped
+#  Kafka
+  zookeeper-store:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper-store
+    expose:
+      - 2181
+  kafka-store:
+    image: wurstmeister/kafka
+    container_name: kafka-store
+    expose:
+      - 9092
+    depends_on:
+      - zookeeper-store
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka-store
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-store:2181
+      KAFKA_CREATE_TOPIC: "order:1:1"

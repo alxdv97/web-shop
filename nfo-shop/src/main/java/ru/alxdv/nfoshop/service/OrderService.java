@@ -12,4 +12,5 @@ public interface OrderService {
     void deleteOrderById(Long id);
     OrderDTO addProductToOrder(Long orderId, Long productId);
     List<OrderDTO> getOrdersByCustomerId(Long id);
+    void sendMessage(String msg);
 }

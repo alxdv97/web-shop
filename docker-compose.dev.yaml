@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  #  Shop app db
+  shop-db:
+    image: 'postgres:13.1-alpine'
+    container_name: shop-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-shop
+    restart: unless-stopped
+  # Auth app db
+  client-db:
+    image: 'postgres:13.1-alpine'
+    container_name: client-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=nfo-client
+    restart: unless-stopped
+  #  Kafka
+  zookeeper-store:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper-store
+    expose:
+      - 2181
+  kafka-store:
+    image: wurstmeister/kafka
+    container_name: kafka-store
+    expose:
+      - 9092
+    depends_on:
+      - zookeeper-store
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka-store
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-store:2181
+      KAFKA_CREATE_TOPIC: "order:1:1"
